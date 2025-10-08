@@ -29,27 +29,23 @@ def sanitize_filename(filename: str) -> str:
     return re.sub(r"[^\w\.\-]", "_", filename)
 
 
-def upload_media(file) -> str:
-    """
-    Upload a Streamlit UploadedFile to Supabase Storage 'media' bucket and return public URL.
-    Generates a unique filename to avoid 'resource already exists' (409) errors.
-    """
-    supabase = get_supabase_client(service=True)
-    safe_name = sanitize_filename(file.name)
+def upload_media(file):
+    import streamlit as st
+    import traceback
 
-    # add unique suffix to avoid duplicates
-    unique_suffix = f"_{int(time.time())}_{uuid.uuid4().hex[:6]}"
-    name_parts = safe_name.split(".")
-    if len(name_parts) > 1:
-        new_name = f"{'.'.join(name_parts[:-1])}{unique_suffix}.{name_parts[-1]}"
-    else:
-        new_name = f"{safe_name}{unique_suffix}"
-
-    file_path = f"media/{new_name}"
     file_bytes = file.read()
-    supabase.storage.from_("media").upload(file_path, file_bytes)
-    public_url = supabase.storage.from_("media").get_public_url(file_path)
-    return public_url
+    file_path = file.name
+
+    try:
+        supabase.storage.from_("media").upload(file_path, file_bytes)
+        url = supabase.storage.from_("media").get_public_url(file_path)
+        st.success("✅ File uploaded successfully!")
+        return url
+    except Exception as e:
+        traceback.print_exc()  # shows full backend traceback in Streamlit logs
+        st.error(f"❌ Upload failed — raw error: {repr(e)}")
+        raise  # optional: re-raise to also show traceback in app logs
+
 
 
 def add_project(title: str, description: str, file_url: str, file_type: str, is_banner: bool = False):
