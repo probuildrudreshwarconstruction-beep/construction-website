@@ -10,8 +10,11 @@ import traceback
 # Load keys from Streamlit secrets
 # ------------------------------------------------------------------
 SUPABASE_URL = st.secrets["SUPABASE_URL"]
-SUPABASE_KEY = st.secrets["SUPABASE_KEY"]                # anon/public key (reads)
-SERVICE_KEY = st.secrets.get("SERVICE_KEY")              # service role key (writes)
+SUPABASE_KEY = st.secrets["SUPABASE_KEY"]          # anon/public key (reads)
+SERVICE_KEY = st.secrets.get("SERVICE_KEY")        # service role key (writes)
+
+if not SERVICE_KEY:
+    st.error("❌ SERVICE_KEY is missing in Streamlit secrets! Uploads will fail.")
 
 # ------------------------------------------------------------------
 # Helpers
@@ -48,23 +51,20 @@ def upload_media(file):
         file_path = f"{file_path}{unique_suffix}"
 
     try:
+        # Make sure we create the supabase client WITH service key here
         supabase = get_supabase_client(service=True)
         supabase.storage.from_("media").upload(file_path, file_bytes)
         url = supabase.storage.from_("media").get_public_url(file_path)
         st.success("✅ File uploaded successfully!")
         return url
     except Exception as e:
-        traceback.print_exc()  # shows full backend traceback in Streamlit logs
+        traceback.print_exc()
         st.error(f"❌ Upload failed — raw error: {repr(e)}")
         raise
 
 
 def add_project(title: str, description: str, file_url: str, file_type: str, is_banner: bool = False):
-    """
-    Insert a new project row into 'projects' table.
-    Fields: title, description, file_url, file_type, is_banner
-    Uses service key.
-    """
+    """Insert a new project row into 'projects' table."""
     supabase = get_supabase_client(service=True)
     payload = {
         "title": title,
@@ -73,15 +73,11 @@ def add_project(title: str, description: str, file_url: str, file_type: str, is_
         "file_type": file_type,
         "is_banner": is_banner
     }
-    res = supabase.table("projects").insert(payload).execute()
-    return res
+    return supabase.table("projects").insert(payload).execute()
 
 
 def list_projects(limit: int = 1000):
-    """
-    Fetch projects using anon/public key (safe read).
-    Returns list of dicts.
-    """
+    """Fetch projects using anon/public key (safe read)."""
     supabase = get_supabase_client(service=False)
     try:
         res = supabase.table("projects").select("*").order("created_at", desc=True).limit(limit).execute()
@@ -99,16 +95,12 @@ def list_projects(limit: int = 1000):
 def delete_project(project_id: int):
     """Delete project row by id (uses service key)."""
     supabase = get_supabase_client(service=True)
-    res = supabase.table("projects").delete().eq("id", project_id).execute()
-    return res
+    return supabase.table("projects").delete().eq("id", project_id).execute()
 
 
 def update_project(project_id: int, title: str, description: str, file_url: str = None,
                    file_type: str = None, is_banner: bool = None):
-    """
-    Update project row. Pass only fields you want to change (file_url/file_type optional).
-    Uses service key.
-    """
+    """Update project row."""
     supabase = get_supabase_client(service=True)
     payload = {"title": title, "description": description}
     if file_url:
@@ -117,5 +109,4 @@ def update_project(project_id: int, title: str, description: str, file_url: str 
         payload["file_type"] = file_type
     if is_banner is not None:
         payload["is_banner"] = is_banner
-    res = supabase.table("projects").update(payload).eq("id", project_id).execute()
-    return res
+    return supabase.table("projects").update(payload).eq("id", project_id).execute()
