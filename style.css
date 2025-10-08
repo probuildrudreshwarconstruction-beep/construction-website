@@ -31,9 +31,9 @@ h1, h2, h3, h4, h5, h6, .hero-title, .section-title {
   overflow: hidden;
   border: 2px solid var(--gold);
   border-radius: 12px;
-  margin: 0 auto 40px auto;  /* âœ… Centers the banner horizontally */
+  margin: 0 auto 40px auto;  /* ✅ Centers the banner horizontally */
   box-shadow: 0 0 25px rgba(212, 175, 55, 0.4);
-  display: flex;             /* âœ… Centers video content if needed */
+  display: flex;             /* ✅ Centers video content if needed */
   justify-content: center;
   align-items: center;
 }
@@ -45,12 +45,12 @@ h1, h2, h3, h4, h5, h6, .hero-title, .section-title {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 0;   /* ðŸŸ¡ changed from -1 to 0 */
+  z-index: 0;   /* 🟡 changed from -1 to 0 */
 }
 
 .hero-text {
   position: relative;
-  z-index: 1;   /* ðŸŸ¡ keep text above video */
+  z-index: 1;   /* 🟡 keep text above video */
   color: white;
   text-shadow: 0 0 20px black;
 }
@@ -125,7 +125,7 @@ h1, h2, h3, h4, h5, h6, .hero-title, .section-title {
 }
 
 .fancy-content li::before {
-  content: "âœ¦";
+  content: "✦";
   color: #d4af37;
   margin-right: 12px;
   font-size: 1.2rem;
@@ -316,7 +316,7 @@ footer a:hover {
 }
 
 #cta .fancy-bullet {
-  content: "âœ¦";
+  content: "✦";
   color: #d4af37;
   font-size: 1.5rem;
   margin-right: 12px;
@@ -461,7 +461,7 @@ button[kind="secondary"]:hover,
     border-radius: 8px;
     margin-bottom: 8px;
     box-shadow: 0 0 10px rgba(212,175,55,0.3);
-}/* ===== ADMIN PANEL â€” Final Elegant Golden Theme ===== */
+}/* ===== ADMIN PANEL — Final Elegant Golden Theme ===== */
 .admin-panel {
   background: linear-gradient(145deg, #3b2e2a, #8c5e3c);
   border: 2px solid var(--gold);
@@ -713,13 +713,13 @@ button[kind="secondary"]:hover,
 }
 /* === Fancy Bullet List for View More === */
 .viewmore-list {
-  list-style: none;          /* âœ… remove default bullet */
+  list-style: none;          /* ✅ remove default bullet */
   padding-left: 0;
   margin: 0;
 }
 
 .viewmore-list li::before {
-  content: "âœ¦";              /* same golden star */
+  content: "✦";              /* same golden star */
   color: #d4af37;
   margin-right: 12px;
   font-size: 1.2rem;
@@ -733,14 +733,14 @@ button[kind="secondary"]:hover,
 }
 /* === CTA BUTTON BORDER FIX === */
 #cta .cta-button {
-  border: 2px solid var(--gold) !important;          /* ðŸ”¸ Golden border */
-  box-shadow: 0 0 12px rgba(212,175,55,0.5) !important; /* âœ¨ Glow effect */
+  border: 2px solid var(--gold) !important;          /* 🔸 Golden border */
+  box-shadow: 0 0 12px rgba(212,175,55,0.5) !important; /* ✨ Glow effect */
   outline: none !important;
 }
 
 #cta .cta-button:hover {
   border: 2px solid var(--gold) !important;
-  box-shadow: 0 0 20px rgba(212,175,55,0.8) !important; /* âœ¨ Stronger glow on hover */
+  box-shadow: 0 0 20px rgba(212,175,55,0.8) !important; /* ✨ Stronger glow on hover */
   background: var(--bronze) !important;
   color: #fff !important;
 }
