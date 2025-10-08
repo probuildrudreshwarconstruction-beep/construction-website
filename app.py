@@ -53,19 +53,22 @@ WHATSAPP = st.secrets.get("WHATSAPP_NUMBER", "")
 wa_link = f"https://wa.me/{WHATSAPP}" if WHATSAPP else "#"
 
 # -------------------- Hero Section --------------------
-hero_video_path = "assets/banner1.mp4"  # 👈 your local video file here
 
-if os.path.exists(hero_video_path):
-    with open(hero_video_path, "rb") as f:
-        video_b64 = base64.b64encode(f.read()).decode()
+hero_image_path = "assets/b1.jpg"
+
+if os.path.exists(hero_image_path):
+    with open(hero_image_path, "rb") as f:
+        img_b64 = base64.b64encode(f.read()).decode()
+
+    wa_link = "https://wa.me/919999999999"  # 🔸 Replace with your actual WhatsApp link
 
     st.markdown(f"""
     <header class="hero w3-display-container">
-        <video autoplay muted loop playsinline class="hero-video">
-            <source src="data:video/mp4;base64,{video_b64}" type="video/mp4">
-        </video>
+        <img src="data:image/jpg;base64,{img_b64}" class="hero-img">
+
     </header>
     """, unsafe_allow_html=True)
+
 
 # -------------------- About Us --------------------
 st.markdown("""
