@@ -1,4 +1,3 @@
-# supabase_client.py
 import streamlit as st
 from supabase import create_client
 import re
@@ -20,30 +19,18 @@ if not SERVICE_KEY:
 # Helpers
 # ------------------------------------------------------------------
 def get_supabase_client(service: bool = False):
-    """
-    Returns a Supabase client. 
-    If service=True, uses service role key (for uploads/inserts). 
-    Otherwise uses anon/public key for safe reads.
-    """
     key = SERVICE_KEY if service and SERVICE_KEY else SUPABASE_KEY
     return create_client(SUPABASE_URL, key)
 
 
 def sanitize_filename(filename: str) -> str:
-    """Replace spaces and forbidden characters with underscores to create safe storage keys."""
     return re.sub(r"[^\w\.\-]", "_", filename)
 
 
 def upload_media(file):
-    """
-    Upload a Streamlit UploadedFile to Supabase Storage 'media' bucket and return public URL.
-    Uses service key for write permissions.
-    Shows a progress bar while uploading.
-    """
     file_bytes = file.read()
     file_path = sanitize_filename(file.name)
 
-    # Add unique suffix to avoid duplicate names
     unique_suffix = f"_{int(time.time())}_{uuid.uuid4().hex[:6]}"
     name_parts = file_path.split(".")
     if len(name_parts) > 1:
@@ -53,28 +40,10 @@ def upload_media(file):
 
     try:
         supabase = get_supabase_client(service=True)
-        chunk_size = 2 * 1024 * 1024  # 2MB per chunk
-        total_size = len(file_bytes)
-        progress_bar = st.progress(0)
-        uploaded_bytes = 0
-
-        # Upload in chunks
-        for i in range(0, total_size, chunk_size):
-            chunk = file_bytes[i:i + chunk_size]
-            # Supabase Storage does not support chunked API by default, so we simulate progress
-            # Real upload happens once at the end
-            uploaded_bytes += len(chunk)
-            progress = min(uploaded_bytes / total_size, 1.0)
-            progress_bar.progress(progress)
-            time.sleep(0.05)  # simulate upload delay for progress bar
-
-        # Actual upload
         supabase.storage.from_("media").upload(file_path, file_bytes)
         url = supabase.storage.from_("media").get_public_url(file_path)
         st.success("✅ File uploaded successfully!")
-        progress_bar.empty()
         return url
-
     except Exception as e:
         traceback.print_exc()
         st.error(f"❌ Upload failed — raw error: {repr(e)}")
@@ -82,7 +51,6 @@ def upload_media(file):
 
 
 def add_project(title: str, description: str, file_url: str, file_type: str, is_banner: bool = False):
-    """Insert a new project row into 'projects' table."""
     supabase = get_supabase_client(service=True)
     payload = {
         "title": title,
@@ -95,7 +63,6 @@ def add_project(title: str, description: str, file_url: str, file_type: str, is_
 
 
 def list_projects(limit: int = 1000):
-    """Fetch projects using anon/public key (safe read)."""
     supabase = get_supabase_client(service=False)
     try:
         res = supabase.table("projects").select("*").order("created_at", desc=True).limit(limit).execute()
@@ -111,14 +78,12 @@ def list_projects(limit: int = 1000):
 
 
 def delete_project(project_id: int):
-    """Delete project row by id (uses service key)."""
     supabase = get_supabase_client(service=True)
     return supabase.table("projects").delete().eq("id", project_id).execute()
 
 
 def update_project(project_id: int, title: str, description: str, file_url: str = None,
                    file_type: str = None, is_banner: bool = None):
-    """Update project row."""
     supabase = get_supabase_client(service=True)
     payload = {"title": title, "description": description}
     if file_url:
