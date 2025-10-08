@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template, send_from_directory
+from flask import Flask, request, jsonify, render_template
 from supabase_client import upload_media, add_project, list_projects, delete_project, update_project
 import hashlib, json, os
 
@@ -7,7 +7,8 @@ app = Flask(__name__)
 # -------------------- Password Config --------------------
 PASS_FILE = "admin_password.json"
 
-def hash_pass(p): return hashlib.sha256(p.encode()).hexdigest()
+def hash_pass(p): 
+    return hashlib.sha256(p.encode()).hexdigest()
 
 def get_password():
     if os.path.exists(PASS_FILE):
