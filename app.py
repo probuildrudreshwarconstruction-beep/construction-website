@@ -18,7 +18,7 @@ def get_password():
             data = json.load(f)
             return data.get("password")
     elif "admin_password" in st.secrets:
-        return hash_pass(st.secrets["admin_password"])
+        return hash_pass(st.secrets["ADMIN_PASSWORD"])
     return None
 
 def set_password(new_pass):
