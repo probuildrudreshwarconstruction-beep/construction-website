@@ -39,7 +39,7 @@ def local_css(file_name):
 local_css("style.css")
 
 # -------------------- Page Config --------------------
-st.set_page_config(page_title="☬ProBuild Rudreshwar☬", layout="wide")
+st.set_page_config(page_title="ProBuild Rudreshwar", layout="wide")
 
 # -------------------- Session State --------------------
 if "admin_visible" not in st.session_state:
@@ -73,7 +73,7 @@ if os.path.exists(hero_image_path):
 # -------------------- About Us --------------------
 st.markdown("""
 <section class="fancy-section" id="about">
-  <h1 class="section-title">☬ All About Us ☬</h1>
+  <h1 class="section-title">All About Us</h1>
   <div class="fancy-content">
     <div class="left">
       <p>ProBuild Rudreshwar Construction & Developers is led by Er. Rushikesh Shivarkar, B.E. Civil — Govt. Contractor & Vastu Expert.</p>
@@ -99,7 +99,7 @@ st.markdown("""
 # -------------------- Our Services --------------------
 st.markdown("""
 <section class="fancy-section" id="services">
-  <h1 class="section-title">☬ Our Services ☬</h1>
+  <h1 class="section-title">Our Services</h1>
   <div class="fancy-content">
     <div class="left">
       <ul>
@@ -125,7 +125,7 @@ st.markdown("""
 # -------------------- Our Projects Section --------------------
 st.markdown("""
 <section class="fancy-section" id="projects">
-  <h1 class="section-title">☬ Our Projects ☬</h1>
+  <h1 class="section-title">Our Projects</h1>
 </section>
 """, unsafe_allow_html=True)
 
