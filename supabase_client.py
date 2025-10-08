@@ -4,8 +4,6 @@ from supabase import create_client
 import re
 import uuid
 import time
-print("🔍 Using URL:", SUPABASE_URL)
-print("🔍 Using Service Key:", bool(SERVICE_KEY))
 
 # ------------------------------------------------------------------
 # Load keys from Streamlit secrets
