@@ -44,16 +44,23 @@ if "admin_edit_id" not in st.session_state:
 # -------------------- Secrets --------------------
 FORM_URL = st.secrets.get("GOOGLE_FORM_URL", "#")
 WHATSAPP = st.secrets.get("WHATSAPP_NUMBER", "")
+INSTAGRAM = st.secrets.get("INSTAGRAM_URL", "#")  # Instagram link
 wa_link = f"https://wa.me/{WHATSAPP}" if WHATSAPP else "#"
 
-# -------------------- Hero Section --------------------
-hero_image_path = "assets/b1.jpg"
-if os.path.exists(hero_image_path):
-    with open(hero_image_path, "rb") as f:
-        img_b64 = base64.b64encode(f.read()).decode()
+# -------------------- Header (Logo + Name) --------------------
+logo_path = "assets/logo.png"  # small circular logo
+company_name = "ProBuild Rudreshwar Constructions"
+
+if os.path.exists(logo_path):
+    with open(logo_path, "rb") as f:
+        logo_b64 = base64.b64encode(f.read()).decode()
+
     st.markdown(f"""
-    <header class="hero w3-display-container">
-        <img src="data:image/jpg;base64,{img_b64}" class="hero-img">
+    <header class="top-header">
+        <div class="header-left">
+            <img src="data:image/png;base64,{logo_b64}" class="company-logo">
+            <span class="company-name">{company_name}</span>
+        </div>
     </header>
     """, unsafe_allow_html=True)
 
@@ -168,6 +175,16 @@ st.markdown(f"""
           </button>
         </a>
       </div>
+      <div class="fancy-bullet-wrapper">
+        <span class="fancy-bullet"></span>
+        <a href="{INSTAGRAM}" target="_blank">
+          <button class="cta-button" style="background:#E1306C; color:#fff;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" 
+                 style="height:22px; vertical-align:middle; margin-right:8px;">
+            Follow on Instagram
+          </button>
+        </a>
+      </div>
     </div>
     <div class="divider"></div>
     <div class="right">
@@ -203,7 +220,7 @@ if st.session_state.admin_visible:
     if stored_password and password and hash_pass(password) == stored_password:
         st.success("Admin authenticated — upload/manage projects below.")
 
-        # 🔑 ===== Change Password Section =====
+        # 🔑 Change Password
         with st.expander("🔐 Change Admin Password"):
             old = st.text_input("Old Password", type="password", key="old_pass")
             new = st.text_input("New Password", type="password", key="new_pass")
@@ -222,7 +239,7 @@ if st.session_state.admin_visible:
                     st.success("✅ Password changed successfully! It will apply on next login.")
                     st.rerun()
 
-        # ===== Upload New Project =====
+        # Upload New Project
         st.markdown('<h2 class="admin-heading">Upload New Project</h2>', unsafe_allow_html=True)
         uploaded = st.file_uploader("Upload media (image/video)", type=["jpg","png","mp4","mov"], key="upload_file")
         up_title = st.text_input("⚜️", key="upload_title", placeholder="Enter Project / Site Name")
@@ -236,7 +253,7 @@ if st.session_state.admin_visible:
                 st.success("Project uploaded successfully!")
                 st.rerun()
 
-        # ===== Manage Existing Projects =====
+        # Manage Existing Projects
         st.markdown('<h2 class="admin-heading">Manage Existing Projects</h2>', unsafe_allow_html=True)
         projects = list_projects() or []
 
@@ -261,7 +278,7 @@ if st.session_state.admin_visible:
                     st.success("Deleted successfully!")
                     st.rerun()
 
-        # ===== Edit Project Form =====
+        # Edit Project Form
         if st.session_state.admin_edit_id:
             st.markdown('<h2 class="admin-heading">Edit Project</h2>', unsafe_allow_html=True)
             new_title = st.text_input("Title", st.session_state.admin_edit_title, placeholder="Project / Site Name")
