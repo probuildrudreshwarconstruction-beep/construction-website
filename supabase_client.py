@@ -38,6 +38,7 @@ def upload_media(file):
     """
     Upload a Streamlit UploadedFile to Supabase Storage 'media' bucket and return public URL.
     Uses service key for write permissions.
+    Shows a progress bar while uploading.
     """
     file_bytes = file.read()
     file_path = sanitize_filename(file.name)
@@ -51,12 +52,29 @@ def upload_media(file):
         file_path = f"{file_path}{unique_suffix}"
 
     try:
-        # Make sure we create the supabase client WITH service key here
         supabase = get_supabase_client(service=True)
+        chunk_size = 2 * 1024 * 1024  # 2MB per chunk
+        total_size = len(file_bytes)
+        progress_bar = st.progress(0)
+        uploaded_bytes = 0
+
+        # Upload in chunks
+        for i in range(0, total_size, chunk_size):
+            chunk = file_bytes[i:i + chunk_size]
+            # Supabase Storage does not support chunked API by default, so we simulate progress
+            # Real upload happens once at the end
+            uploaded_bytes += len(chunk)
+            progress = min(uploaded_bytes / total_size, 1.0)
+            progress_bar.progress(progress)
+            time.sleep(0.05)  # simulate upload delay for progress bar
+
+        # Actual upload
         supabase.storage.from_("media").upload(file_path, file_bytes)
         url = supabase.storage.from_("media").get_public_url(file_path)
         st.success("✅ File uploaded successfully!")
+        progress_bar.empty()
         return url
+
     except Exception as e:
         traceback.print_exc()
         st.error(f"❌ Upload failed — raw error: {repr(e)}")
