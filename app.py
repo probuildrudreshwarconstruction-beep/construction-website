@@ -1,3 +1,4 @@
+# app.py
 import streamlit as st
 from supabase_client import upload_media, add_project, list_projects, delete_project, update_project
 import os
@@ -12,11 +13,6 @@ def hash_pass(p):
     return hashlib.sha256(p.encode()).hexdigest()
 
 def get_password():
-    """
-    ✅ Checks for password in admin_password.json first.
-    ✅ Falls back to Streamlit secrets if not found.
-    ✅ Returns None if nothing exists (won't crash).
-    """
     if os.path.exists(PASS_FILE):
         with open(PASS_FILE, "r") as f:
             data = json.load(f)
@@ -27,7 +23,6 @@ def get_password():
         return None
 
 def set_password(new_pass):
-    """✅ Updates password file with new hash."""
     with open(PASS_FILE, "w") as f:
         json.dump({"password": hash_pass(new_pass)}, f)
 
@@ -52,23 +47,105 @@ FORM_URL = st.secrets.get("GOOGLE_FORM_URL", "#")
 WHATSAPP = st.secrets.get("WHATSAPP_NUMBER", "")
 wa_link = f"https://wa.me/{WHATSAPP}" if WHATSAPP else "#"
 
+# -------------------- Helper: choose hero source (webp first) --------------------
+def hero_src_html():
+    """
+    Prefer webp/smaller files in assets/ if present.
+    If none present, fallback to original base64 embedding (keeps original behaviour).
+    This avoids encoding a very large base64 blob in mobile browsers unless necessary.
+    """
+    hero_base = "assets/b1"
+    candidates = [
+        (f"{hero_base}-small.webp", "image/webp"),
+        (f"{hero_base}.webp", "image/webp"),
+        (f"{hero_base}.avif", "image/avif"),
+        (f"{hero_base}.jpg", "image/jpeg"),
+        (f"{hero_base}.png", "image/png"),
+    ]
+    available = [p for p, t in candidates if os.path.exists(p)]
+    if available:
+        # build responsive picture block
+        picture = '<picture>\n'
+        # prefer AVIF/WebP sources first
+        for p, t in candidates:
+            if os.path.exists(p) and (t in ("image/avif","image/webp")):
+                picture += f'  <source srcset="{p}" type="{t}">\n'
+        # fallback sources (jpeg/png)
+        for p, t in candidates:
+            if os.path.exists(p) and t in ("image/jpeg","image/png"):
+                picture += f'  <source srcset="{p}" type="{t}">\n'
+        # final <img>
+        fallback = available[-1]
+        picture += f'  <img src="{fallback}" alt="ProBuild Rudreshwar" class="hero-img" loading="lazy" decoding="async" width="1200" height="800">\n'
+        picture += '</picture>\n'
+        return picture
+    else:
+        # fallback to your original base64 behaviour to preserve exact visual
+        hero_image_path = "assets/b1.jpg"
+        if os.path.exists(hero_image_path):
+            with open(hero_image_path, "rb") as f:
+                img_b64 = base64.b64encode(f.read()).decode()
+            return f'<img src="data:image/jpg;base64,{img_b64}" class="hero-img" alt="ProBuild Rudreshwar" loading="lazy" decoding="async">'
+        else:
+            # nothing found: return a lightweight placeholder so the page still renders quickly
+            return '<div class="hero-placeholder" style="width:100%;height:240px;display:flex;align-items:center;justify-content:center;background:#0d0d0d;color:#f9f5ef">ProBuild Rudreshwar</div>'
+
+# -------------------- Small inline JS for lazy modal media loading --------------------
+# This script ensures modal media src is only assigned when the modal opens,
+# and removed when it closes — preventing mobile Safari from preloading all videos.
+modal_script = """
+<script>
+function openModal(idx){
+  var mod = document.getElementById('modal-'+idx);
+  if(!mod) return;
+  var media = mod.querySelector('[data-src]');
+  if(media && !media.getAttribute('src')){
+    media.setAttribute('src', media.getAttribute('data-src'));
+    // if video, start playing if autoplay desired
+    if(media.tagName.toLowerCase()==='video'){
+      try { media.play().catch(()=>{}); } catch(e){}
+    }
+  }
+  mod.style.display = 'block';
+}
+function closeModal(idx){
+  var mod = document.getElementById('modal-'+idx);
+  if(!mod) return;
+  var media = mod.querySelector('[data-src]');
+  if(media){
+    if(media.tagName.toLowerCase()==='video'){
+      try { media.pause(); } catch(e){}
+      media.removeAttribute('src');
+      media.load();
+    } else {
+      media.removeAttribute('src');
+    }
+  }
+  mod.style.display = 'none';
+}
+window.addEventListener('click', function(e){
+  // click outside the modal content closes it
+  if(e.target && e.target.classList && e.target.classList.contains('modal')){
+    e.target.style.display = 'none';
+    var media = e.target.querySelector('[data-src]');
+    if(media){
+      media.removeAttribute('src');
+      if(media.tagName && media.tagName.toLowerCase()==='video'){
+        try { media.pause(); } catch(e){}
+        media.load();
+      }
+    }
+  }
+});
+</script>
+"""
+
+st.markdown(modal_script, unsafe_allow_html=True)
+
 # -------------------- Hero Section --------------------
-
-hero_image_path = "assets/b1.jpg"
-
-if os.path.exists(hero_image_path):
-    with open(hero_image_path, "rb") as f:
-        img_b64 = base64.b64encode(f.read()).decode()
-
-    wa_link = "https://wa.me/919999999999"  # 🔸 Replace with your actual WhatsApp link
-
-    st.markdown(f"""
-    <header class="hero w3-display-container">
-        <img src="data:image/jpg;base64,{img_b64}" class="hero-img">
-
-    </header>
-    """, unsafe_allow_html=True)
-
+st.markdown("<header class='hero'>", unsafe_allow_html=True)
+st.markdown(hero_src_html(), unsafe_allow_html=True)
+st.markdown("</header>", unsafe_allow_html=True)
 
 # -------------------- About Us --------------------
 st.markdown("""
@@ -129,12 +206,14 @@ st.markdown("""
 </section>
 """, unsafe_allow_html=True)
 
+# fetch projects (keeps original behaviour)
 try:
     projects = list_projects() or []
 except Exception as e:
     st.error(f"Error fetching projects: {e}")
     projects = []
 
+# fallback sample projects (unchanged)
 if not projects:
     projects = [
         {"title":"Luxury Villa","description":"Modern villa with eco-friendly materials.","file_url":"https://www.w3schools.com/w3images/fjords.jpg","file_type":"image"},
@@ -151,18 +230,35 @@ for idx, proj in enumerate(projects):
         title = proj.get("title", "Untitled")
         desc = proj.get("description", "")
 
-        st.markdown(f"""
-        <div class="project-container" onclick="document.getElementById('modal-{idx}').style.display='block'">
-          {'<video src="'+file_url+'" autoplay muted loop playsinline></video>' if file_type in ('video','mp4','mov') else '<img src="'+file_url+'">'}
-          <div class="project-overlay">{title}</div>
-        </div>
+        # For thumbnails: images use loading lazy, videos have poster if possible and preload="none"
+        if file_type in ('video','mp4','mov'):
+            thumb_html = f'''
+            <div class="project-container" onclick="openModal({idx})" role="button" tabindex="0">
+              <video class="project-thumb" data-src="{file_url}" preload="none" playsinline muted loop poster="" style="width:100%;height:100%;object-fit:cover;border-radius:10px;filter:brightness(70%);"></video>
+              <div class="project-overlay">{title}</div>
+            </div>
+            '''
+            modal_media_html = f'<video data-src="{file_url}" controls preload="none" playsinline style="width:100%; max-height:80vh; border-radius:8px;"></video>'
+        else:
+            # image thumbnail uses lazy loading; modal image uses data-src to avoid preloading
+            thumb_html = f'''
+            <div class="project-container" onclick="openModal({idx})" role="button" tabindex="0">
+              <img loading="lazy" decoding="async" src="{file_url}" alt="{title}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;filter:brightness(80%);">
+              <div class="project-overlay">{title}</div>
+            </div>
+            '''
+            modal_media_html = f'<img data-src="{file_url}" alt="{title}" style="width:100%; max-height:80vh; object-fit:contain; border-radius:8px;">'
 
-        <div id="modal-{idx}" class="modal">
-          <span class="modal-close" onclick="document.getElementById('modal-{idx}').style.display='none'">&times;</span>
-          {'<video src="'+file_url+'" controls autoplay style="width:100%; max-height:80vh;"></video>' if file_type in ('video','mp4','mov') else '<img class="modal-content" src="'+file_url+'">'}
+        # render thumbnail + modal (modal content doesn't have src yet - it will be set when user opens)
+        st.markdown(f"""
+        {thumb_html}
+        <div id="modal-{idx}" class="modal" aria-hidden="true">
+          <span class="modal-close" onclick="closeModal({idx})">&times;</span>
+          {modal_media_html}
         </div>
         """, unsafe_allow_html=True)
 
+        # view more (keeps behavior exactly)
         with st.expander("View More"):
              formatted_desc = "".join([f"<li>{line.strip()}</li>" for line in desc.split("\n") if line.strip()])
              st.markdown(f"<ul class='viewmore-list'>{formatted_desc}</ul>", unsafe_allow_html=True)
@@ -200,7 +296,7 @@ st.markdown(f"""
 </section>
 """, unsafe_allow_html=True)
 
-# -------------------- Admin Panel --------------------
+# -------------------- Admin Panel (unchanged features) --------------------
 st.markdown("<hr><h2></h2><hr>", unsafe_allow_html=True)
 
 if st.button("🔒"):
