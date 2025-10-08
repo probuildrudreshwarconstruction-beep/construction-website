@@ -1,4 +1,5 @@
 import streamlit as st
+from streamlit.components.v1 import html
 from supabase_client import upload_media, add_project, list_projects, delete_project, update_project
 import os
 import base64
@@ -12,11 +13,6 @@ def hash_pass(p):
     return hashlib.sha256(p.encode()).hexdigest()
 
 def get_password():
-    """
-    ✅ Checks for password in admin_password.json first.
-    ✅ Falls back to Streamlit secrets if not found.
-    ✅ Returns None if nothing exists (won't crash).
-    """
     if os.path.exists(PASS_FILE):
         with open(PASS_FILE, "r") as f:
             data = json.load(f)
@@ -27,203 +23,149 @@ def get_password():
         return None
 
 def set_password(new_pass):
-    """✅ Updates password file with new hash."""
     with open(PASS_FILE, "w") as f:
         json.dump({"password": hash_pass(new_pass)}, f)
 
 # -------------------- Load external CSS --------------------
 def local_css(file_name):
-    with open(file_name) as f:
-        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-
+    if os.path.exists(file_name):
+        with open(file_name) as f:
+            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 local_css("style.css")
 
 # -------------------- Page Config --------------------
 st.set_page_config(page_title="☬ProBuild Rudreshwar☬", layout="wide")
 
-# -------------------- Session State --------------------
-if "admin_visible" not in st.session_state:
-    st.session_state.admin_visible = False
-if "admin_edit_id" not in st.session_state:
-    st.session_state.admin_edit_id = None
-
-# -------------------- Secrets --------------------
-FORM_URL = st.secrets.get("GOOGLE_FORM_URL", "#")
-WHATSAPP = st.secrets.get("WHATSAPP_NUMBER", "")
-wa_link = f"https://wa.me/{WHATSAPP}" if WHATSAPP else "#"
-
 # -------------------- Hero Section --------------------
-
 hero_image_path = "assets/b1.jpg"
-
+img_b64 = ""
 if os.path.exists(hero_image_path):
     with open(hero_image_path, "rb") as f:
         img_b64 = base64.b64encode(f.read()).decode()
 
-    wa_link = "https://wa.me/919999999999"  # 🔸 Replace with your actual WhatsApp link
-
-    st.markdown(f"""
-    <header class="hero w3-display-container">
-        <img src="data:image/jpg;base64,{img_b64}" class="hero-img">
-
-    </header>
-    """, unsafe_allow_html=True)
-
-
-# -------------------- About Us --------------------
-st.markdown("""
-<section class="fancy-section" id="about">
-  <h1 class="section-title">☬ All About Us ☬</h1>
-  <div class="fancy-content">
-    <div class="left">
-      <p>ProBuild Rudreshwar Construction & Developers is led by Er. Rushikesh Shivarkar, B.E. Civil — Govt. Contractor & Vastu Expert.</p>
-      <ul>
-        <li>Trusted Construction Solutions since 2015</li>
-        <li>Residential & Industrial Projects</li>
-        <li>Modern Design with Structural Integrity</li>
-      </ul>
-    </div>
-    <div class="divider"></div>
-    <div class="right">
-      <p>We specialize in delivering timely and high-quality construction services tailored to client needs.</p>
-      <ul>
-        <li>Timely Delivery & Cost-effective Solutions</li>
-        <li>Address: Lane No.1, Laxmi Colony, Pune</li>
-        <li>Contact: +91 7745065820</li>
-      </ul>
-    </div>
-  </div>
-</section>
-""", unsafe_allow_html=True)
-
-# -------------------- Our Services --------------------
-st.markdown("""
-<section class="fancy-section" id="services">
-  <h1 class="section-title">☬ Our Services ☬</h1>
-  <div class="fancy-content">
-    <div class="left">
-      <ul>
-        <li>PMC, PMRDA Plan Sanctioning</li>
-        <li>Architectural Drawing & Design</li>
-        <li>Structural Steel Designing</li>
-        <li>3D Bungalow / Building Designing</li>
-      </ul>
-    </div>
-    <div class="divider"></div>
-    <div class="right">
-      <ul>
-        <li>Interior Design — Lock & Key Projects</li>
-        <li>Estimation, Costing & Property Evaluation</li>
-        <li>Pre-Engineering Buildings</li>
-        <li>Warehouses & Godowns</li>
-      </ul>
-    </div>
-  </div>
-</section>
-""", unsafe_allow_html=True)
-
-# -------------------- Our Projects Section --------------------
-st.markdown("""
-<section class="fancy-section" id="projects">
-  <h1 class="section-title">☬ Our Projects ☬</h1>
-</section>
-""", unsafe_allow_html=True)
-
+# -------------------- Fetch Projects --------------------
 try:
     projects = list_projects() or []
 except Exception as e:
     st.error(f"Error fetching projects: {e}")
     projects = []
 
-if not projects:
-    projects = [
-        {"title":"Luxury Villa","description":"Modern villa with eco-friendly materials.","file_url":"https://www.w3schools.com/w3images/fjords.jpg","file_type":"image"},
-        {"title":"Commercial Renovation","description":"Revamped commercial complex.","file_url":"https://www.w3schools.com/w3images/lights.jpg","file_type":"image"},
-        {"title":"Interior Design","description":"Elegant interior design.","file_url":"https://www.w3schools.com/w3images/mountains.jpg","file_type":"image"}
-    ]
+projects_json = json.dumps(projects)
 
-cols = st.columns(3)
-for idx, proj in enumerate(projects):
-    col = cols[idx % 3]
-    with col:
-        file_url = proj.get("file_url", "")
-        file_type = (proj.get("file_type") or "").lower()
-        title = proj.get("title", "Untitled")
-        desc = proj.get("description", "")
+# -------------------- Render Frontend HTML --------------------
+html_content = f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProBuild Rudreshwar</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+body {{ font-family: 'Arial', sans-serif; margin:0; padding:0; }}
+.hero {{ background-image: url('data:image/jpg;base64,{img_b64}'); background-size: cover; background-position: center; height:60vh; display:flex; align-items:center; justify-content:center; color:white; text-align:center; }}
+.project-card {{ transition: transform 0.3s ease; }}
+.project-card:hover {{ transform: scale(1.05); }}
+.service-item {{ background:#f7fafc; padding:1rem; border-radius:0.5rem; box-shadow:0 2px 6px rgba(0,0,0,0.1); }}
+</style>
+</head>
+<body>
 
-        st.markdown(f"""
-        <div class="project-container" onclick="document.getElementById('modal-{idx}').style.display='block'">
-          {'<video src="'+file_url+'" autoplay muted loop playsinline></video>' if file_type in ('video','mp4','mov') else '<img src="'+file_url+'">'}
-          <div class="project-overlay">{title}</div>
-        </div>
+<!-- Hero -->
+<section class="hero">
+  <div>
+    <h1 class="text-5xl font-bold mb-4">☬ ProBuild Rudreshwar ☬</h1>
+    <p class="text-xl">Crafting Excellence in Construction</p>
+  </div>
+</section>
 
-        <div id="modal-{idx}" class="modal">
-          <span class="modal-close" onclick="document.getElementById('modal-{idx}').style.display='none'">&times;</span>
-          {'<video src="'+file_url+'" controls autoplay style="width:100%; max-height:80vh;"></video>' if file_type in ('video','mp4','mov') else '<img class="modal-content" src="'+file_url+'">'}
-        </div>
-        """, unsafe_allow_html=True)
+<!-- About -->
+<section class="py-16 px-4 bg-gray-100">
+  <div class="max-w-7xl mx-auto text-center">
+    <h2 class="text-3xl font-semibold mb-6">☬ All About Us ☬</h2>
+    <p class="text-lg mb-4">ProBuild Rudreshwar Construction & Developers, led by Er. Rushikesh Shivarkar, B.E. Civil — Govt. Contractor & Vastu Expert, has been delivering trusted construction solutions since 2015.</p>
+    <p class="text-lg">We specialize in residential and industrial projects, offering modern designs with structural integrity.</p>
+  </div>
+</section>
 
-        with st.expander("View More"):
-             formatted_desc = "".join([f"<li>{line.strip()}</li>" for line in desc.split("\n") if line.strip()])
-             st.markdown(f"<ul class='viewmore-list'>{formatted_desc}</ul>", unsafe_allow_html=True)
-
-# -------------------- Marathi CTA --------------------
-st.markdown(f"""
-<section class="fancy-section" id="cta">
-  <h1 class="section-title">तर मग काय वाट बघता? संपर्क करा! 🚀</h1>
-  <div class="fancy-content">
-    <div class="left">
-      <div class="fancy-bullet-wrapper">
-        <span class="fancy-bullet"></span>
-        <a href="{FORM_URL}" target="_blank">
-          <button class="cta-button" style="background:var(--gold); color:#000;">
-            📄 Enquire via Forms
-          </button>
-        </a>
-      </div>
-    </div>
-    <div class="divider"></div>
-    <div class="right">
-      <div class="fancy-bullet-wrapper">
-        <span class="fancy-bullet"></span>
-        <a href="{wa_link}" target="_blank">
-          <button class="cta-button" style="background:var(--bronze); color:#fff;">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" 
-                 style="height:22px; vertical-align:middle; margin-right:8px;">
-            Contact on WhatsApp
-          </button>
-        </a>
-      </div>
+<!-- Services -->
+<section class="py-16 px-4">
+  <div class="max-w-7xl mx-auto text-center">
+    <h2 class="text-3xl font-semibold mb-6">☬ Our Services ☬</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div class="service-item">PMC, PMRDA Plan Sanctioning</div>
+      <div class="service-item">Architectural Drawing & Design</div>
+      <div class="service-item">Structural Steel Designing</div>
+      <div class="service-item">3D Bungalow / Building Designing</div>
+      <div class="service-item">Interior Design — Lock & Key Projects</div>
+      <div class="service-item">Estimation, Costing & Property Evaluation</div>
+      <div class="service-item">Pre-Engineering Buildings</div>
+      <div class="service-item">Warehouses & Godowns</div>
     </div>
   </div>
-  <p style="text-align:center; margin-top:12px; font-size:0.9rem; opacity:0.8;">© 2025 ProBuild Rudreshwar Constructions</p>
 </section>
-""", unsafe_allow_html=True)
+
+<!-- Projects -->
+<section class="py-16 px-4 bg-gray-100">
+  <div class="max-w-7xl mx-auto text-center">
+    <h2 class="text-3xl font-semibold mb-6">☬ Our Projects ☬</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+      <script>
+        const projects = {projects_json};
+        projects.forEach(project => {{
+          document.write(`
+            <div class="project-card bg-white shadow-lg rounded-lg overflow-hidden">
+              <img src="${{project.file_url}}" alt="${{project.title}}" class="w-full h-48 object-cover">
+              <div class="p-4">
+                <h3 class="text-xl font-semibold">${{project.title}}</h3>
+                <p class="text-gray-600">${{project.description}}</p>
+              </div>
+            </div>
+          `);
+        }});
+      </script>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="py-16 px-4 text-center bg-gray-800 text-white">
+  <h2 class="text-3xl font-semibold mb-6">Let's Build Together</h2>
+  <p class="text-lg mb-4">Contact us today to discuss your next project.</p>
+  <a href="https://wa.me/919999999999" target="_blank" class="inline-block bg-green-500 hover:bg-green-600 text-white py-2 px-6 rounded-lg">Contact on WhatsApp</a>
+</section>
+
+</body>
+</html>
+"""
+
+html(html_content, height=1500)
 
 # -------------------- Admin Panel --------------------
-st.markdown("<hr><h2></h2><hr>", unsafe_allow_html=True)
+if "admin_visible" not in st.session_state:
+    st.session_state.admin_visible = False
+if "admin_edit_id" not in st.session_state:
+    st.session_state.admin_edit_id = None
 
-if st.button("🔒"):
+st.markdown("<hr>", unsafe_allow_html=True)
+if st.button("🔒 Toggle Admin Panel"):
     st.session_state.admin_visible = not st.session_state.admin_visible
 
 if st.session_state.admin_visible:
     st.markdown('<div class="admin-panel">', unsafe_allow_html=True)
 
-    # 🔐 Admin Login
-    password = st.text_input("⚜️", type="password", key="admin_pw", placeholder="Enter admin password")
+    password = st.text_input("⚜️ Admin Password", type="password", key="admin_pw", placeholder="Enter admin password")
     stored_password = get_password()
 
     if stored_password and password and hash_pass(password) == stored_password:
         st.success("Admin authenticated — upload/manage projects below.")
 
-        # 🔑 ===== Change Password Section =====
+        # Change Password
         with st.expander("🔐 Change Admin Password"):
             old = st.text_input("Old Password", type="password", key="old_pass")
             new = st.text_input("New Password", type="password", key="new_pass")
             confirm = st.text_input("Confirm New Password", type="password", key="confirm_pass")
-            change_btn = st.button("Change Password")
-
-            if change_btn:
+            if st.button("Change Password"):
                 if hash_pass(old) != stored_password:
                     st.error("❌ Old password is incorrect.")
                 elif new != confirm:
@@ -232,14 +174,14 @@ if st.session_state.admin_visible:
                     st.warning("⚠️ Password must be at least 5 characters.")
                 else:
                     set_password(new)
-                    st.success("✅ Password changed successfully! It will apply on next login.")
+                    st.success("✅ Password changed successfully!")
                     st.rerun()
 
-        # ===== Upload New Project =====
+        # Upload New Project
         st.markdown('<h2 class="admin-heading">Upload New Project</h2>', unsafe_allow_html=True)
         uploaded = st.file_uploader("Upload media (image/video)", type=["jpg","png","mp4","mov"], key="upload_file")
-        up_title = st.text_input("⚜️", key="upload_title", placeholder="Enter Project / Site Name")
-        up_desc = st.text_area("⚜️", key="upload_desc", placeholder="Enter Project Description")
+        up_title = st.text_input("Project Title", key="upload_title")
+        up_desc = st.text_area("Project Description", key="upload_desc")
         
         if st.button("Submit Project"):
             if uploaded and up_title and up_desc:
@@ -249,7 +191,7 @@ if st.session_state.admin_visible:
                 st.success("Project uploaded successfully!")
                 st.rerun()
 
-        # ===== Manage Existing Projects =====
+        # Manage Existing Projects
         st.markdown('<h2 class="admin-heading">Manage Existing Projects</h2>', unsafe_allow_html=True)
         projects = list_projects() or []
 
@@ -259,10 +201,7 @@ if st.session_state.admin_visible:
 
             col1, col2, col3 = st.columns([0.7, 0.15, 0.15])
             with col1:
-                st.markdown(
-                    f"<div class='project-item'><div class='title'><b>{project_title}</b></div></div>",
-                    unsafe_allow_html=True,
-                )
+                st.markdown(f"<div class='project-item'><b>{project_title}</b></div>", unsafe_allow_html=True)
             with col2:
                 if st.button("Edit", key=f"edit-{project_id}"):
                     st.session_state.admin_edit_id = project_id
@@ -274,13 +213,12 @@ if st.session_state.admin_visible:
                     st.success("Deleted successfully!")
                     st.rerun()
 
-        # ===== Edit Project Form =====
+        # Edit Form
         if st.session_state.admin_edit_id:
             st.markdown('<h2 class="admin-heading">Edit Project</h2>', unsafe_allow_html=True)
-            new_title = st.text_input("Title", st.session_state.admin_edit_title, placeholder="Project / Site Name")
-            new_desc = st.text_area("Description", st.session_state.admin_edit_desc, placeholder="Project Description")
+            new_title = st.text_input("Title", st.session_state.admin_edit_title)
+            new_desc = st.text_area("Description", st.session_state.admin_edit_desc)
             new_file = st.file_uploader("Replace Media (optional)", type=["jpg","png","mp4","mov"])
-            
             if st.button("Save Changes"):
                 file_url = None
                 file_type = None
@@ -291,9 +229,8 @@ if st.session_state.admin_visible:
                 st.success("Updated!")
                 st.session_state.admin_edit_id = None
                 st.rerun()
-
     else:
         if password:
             st.error("❌ Wrong password.")
-    
+
     st.markdown("</div>", unsafe_allow_html=True)
