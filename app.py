@@ -12,6 +12,11 @@ def hash_pass(p):
     return hashlib.sha256(p.encode()).hexdigest()
 
 def get_password():
+    """
+    ✅ Checks for password in admin_password.json first.
+    ✅ Falls back to Streamlit secrets if not found.
+    ✅ Returns None if nothing exists (won't crash).
+    """
     if os.path.exists(PASS_FILE):
         with open(PASS_FILE, "r") as f:
             data = json.load(f)
@@ -22,6 +27,7 @@ def get_password():
         return None
 
 def set_password(new_pass):
+    """✅ Updates password file with new hash."""
     with open(PASS_FILE, "w") as f:
         json.dump({"password": hash_pass(new_pass)}, f)
 
@@ -46,40 +52,8 @@ FORM_URL = st.secrets.get("GOOGLE_FORM_URL", "#")
 WHATSAPP = st.secrets.get("WHATSAPP_NUMBER", "")
 wa_link = f"https://wa.me/{WHATSAPP}" if WHATSAPP else "#"
 
-# -------------------- HEADER (L&T Style) --------------------
-logo_path = "assets/logo.png"  # 🔸 Replace with your logo file path
-logo_html = ""
-if os.path.exists(logo_path):
-    with open(logo_path, "rb") as f:
-        logo_b64 = base64.b64encode(f.read()).decode()
-        logo_html = f'<img src="data:image/png;base64,{logo_b64}" alt="Logo">'
-
-st.markdown(f"""
-<header class="site-header">
-  <div class="header-left">
-    {logo_html}
-    <span class="header-title">☬ ProBuild Rudreshwar ☬</span>
-  </div>
-  <div class="header-right">
-    <button onclick="window.dispatchEvent(new CustomEvent('toggleAdmin'));">🔒 Admin</button>
-  </div>
-</header>
-
-<script>
-const streamlitDoc = window.parent.document;
-window.addEventListener('toggleAdmin', () => {{
-  const btns = Array.from(streamlitDoc.querySelectorAll('button[kind="primary"]'));
-  for (const b of btns) {{
-    if (b.innerText.trim() === "🔒") {{
-      b.click();
-      break;
-    }}
-  }}
-}});
-</script>
-""", unsafe_allow_html=True)
-
 # -------------------- Hero Section --------------------
+
 hero_image_path = "assets/b1.jpg"
 
 if os.path.exists(hero_image_path):
@@ -91,8 +65,10 @@ if os.path.exists(hero_image_path):
     st.markdown(f"""
     <header class="hero w3-display-container">
         <img src="data:image/jpg;base64,{img_b64}" class="hero-img">
+
     </header>
     """, unsafe_allow_html=True)
+
 
 # -------------------- About Us --------------------
 st.markdown("""
@@ -161,9 +137,9 @@ except Exception as e:
 
 if not projects:
     projects = [
-        {"title": "Luxury Villa", "description": "Modern villa with eco-friendly materials.", "file_url": "https://www.w3schools.com/w3images/fjords.jpg", "file_type": "image"},
-        {"title": "Commercial Renovation", "description": "Revamped commercial complex.", "file_url": "https://www.w3schools.com/w3images/lights.jpg", "file_type": "image"},
-        {"title": "Interior Design", "description": "Elegant interior design.", "file_url": "https://www.w3schools.com/w3images/mountains.jpg", "file_type": "image"}
+        {"title":"Luxury Villa","description":"Modern villa with eco-friendly materials.","file_url":"https://www.w3schools.com/w3images/fjords.jpg","file_type":"image"},
+        {"title":"Commercial Renovation","description":"Revamped commercial complex.","file_url":"https://www.w3schools.com/w3images/lights.jpg","file_type":"image"},
+        {"title":"Interior Design","description":"Elegant interior design.","file_url":"https://www.w3schools.com/w3images/mountains.jpg","file_type":"image"}
     ]
 
 cols = st.columns(3)
@@ -188,8 +164,8 @@ for idx, proj in enumerate(projects):
         """, unsafe_allow_html=True)
 
         with st.expander("View More"):
-            formatted_desc = "".join([f"<li>{line.strip()}</li>" for line in desc.split("\n") if line.strip()])
-            st.markdown(f"<ul class='viewmore-list'>{formatted_desc}</ul>", unsafe_allow_html=True)
+             formatted_desc = "".join([f"<li>{line.strip()}</li>" for line in desc.split("\n") if line.strip()])
+             st.markdown(f"<ul class='viewmore-list'>{formatted_desc}</ul>", unsafe_allow_html=True)
 
 # -------------------- Marathi CTA --------------------
 st.markdown(f"""
@@ -227,16 +203,20 @@ st.markdown(f"""
 # -------------------- Admin Panel --------------------
 st.markdown("<hr><h2></h2><hr>", unsafe_allow_html=True)
 
+if st.button("🔒"):
+    st.session_state.admin_visible = not st.session_state.admin_visible
+
 if st.session_state.admin_visible:
     st.markdown('<div class="admin-panel">', unsafe_allow_html=True)
 
+    # 🔐 Admin Login
     password = st.text_input("⚜️", type="password", key="admin_pw", placeholder="Enter admin password")
     stored_password = get_password()
 
     if stored_password and password and hash_pass(password) == stored_password:
         st.success("Admin authenticated — upload/manage projects below.")
 
-        # 🔑 Change Password
+        # 🔑 ===== Change Password Section =====
         with st.expander("🔐 Change Admin Password"):
             old = st.text_input("Old Password", type="password", key="old_pass")
             new = st.text_input("New Password", type="password", key="new_pass")
@@ -255,7 +235,7 @@ if st.session_state.admin_visible:
                     st.success("✅ Password changed successfully! It will apply on next login.")
                     st.rerun()
 
-        # Upload New Project
+        # ===== Upload New Project =====
         st.markdown('<h2 class="admin-heading">Upload New Project</h2>', unsafe_allow_html=True)
         uploaded = st.file_uploader("Upload media (image/video)", type=["jpg","png","mp4","mov"], key="upload_file")
         up_title = st.text_input("⚜️", key="upload_title", placeholder="Enter Project / Site Name")
@@ -269,7 +249,7 @@ if st.session_state.admin_visible:
                 st.success("Project uploaded successfully!")
                 st.rerun()
 
-        # Manage Existing Projects
+        # ===== Manage Existing Projects =====
         st.markdown('<h2 class="admin-heading">Manage Existing Projects</h2>', unsafe_allow_html=True)
         projects = list_projects() or []
 
@@ -294,7 +274,7 @@ if st.session_state.admin_visible:
                     st.success("Deleted successfully!")
                     st.rerun()
 
-        # Edit Project Form
+        # ===== Edit Project Form =====
         if st.session_state.admin_edit_id:
             st.markdown('<h2 class="admin-heading">Edit Project</h2>', unsafe_allow_html=True)
             new_title = st.text_input("Title", st.session_state.admin_edit_title, placeholder="Project / Site Name")
