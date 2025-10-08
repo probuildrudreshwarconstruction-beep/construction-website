@@ -1,109 +1,79 @@
 import streamlit as st
-import os, base64, json, hashlib
-from io import BytesIO
 from supabase_client import upload_media, add_project, list_projects, delete_project, update_project
-from PIL import Image
-import subprocess
+import os
+import base64
+import json
+import hashlib
 
-# -------------------- Config --------------------
+# -------------------- Password Config --------------------
 PASS_FILE = "admin_password.json"
-st.set_page_config(page_title="ProBuild Rudreshwar", layout="wide", initial_sidebar_state="collapsed")
-st.markdown("""<meta name="viewport" content="width=device-width, initial-scale=1">""", unsafe_allow_html=True)
 
-# -------------------- Password Hashing --------------------
-def hash_pass(p): return hashlib.sha256(p.encode()).hexdigest()
+def hash_pass(p):
+    return hashlib.sha256(p.encode()).hexdigest()
 
 def get_password():
+    """
+    ✅ Checks for password in admin_password.json first.
+    ✅ Falls back to Streamlit secrets if not found.
+    ✅ Returns None if nothing exists (won't crash).
+    """
     if os.path.exists(PASS_FILE):
-        with open(PASS_FILE) as f:
-            return json.load(f).get("password")
+        with open(PASS_FILE, "r") as f:
+            data = json.load(f)
+            return data.get("password")
     elif "admin_password" in st.secrets:
         return hash_pass(st.secrets["admin_password"])
-    return None
+    else:
+        return None
 
 def set_password(new_pass):
+    """✅ Updates password file with new hash."""
     with open(PASS_FILE, "w") as f:
         json.dump({"password": hash_pass(new_pass)}, f)
 
-# -------------------- CSS --------------------
+# -------------------- Load external CSS --------------------
 def local_css(file_name):
     with open(file_name) as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
 local_css("style.css")
 
-# -------------------- Caching --------------------
-@st.cache_data(show_spinner=False)
-def cached_projects():
-    return list_projects() or []
+# -------------------- Page Config --------------------
+st.set_page_config(page_title="☬ProBuild Rudreshwar☬", layout="wide")
 
-@st.cache_data(show_spinner=False)
-def get_hero_image_b64(path):
-    with open(path, "rb") as f:
-        return base64.b64encode(f.read()).decode()
+# -------------------- Session State --------------------
+if "admin_visible" not in st.session_state:
+    st.session_state.admin_visible = False
+if "admin_edit_id" not in st.session_state:
+    st.session_state.admin_edit_id = None
 
-# -------------------- Media Compression --------------------
-def compress_media(file):
-    filename = file.name
-    filetype = file.type
-
-    # Image compression
-    if filetype.startswith("image"):
-        img = Image.open(file)
-        img = img.convert("RGB")
-        max_w = 1280
-        if img.width > max_w:
-            ratio = max_w / img.width
-            new_size = (max_w, int(img.height * ratio))
-            img = img.resize(new_size, Image.LANCZOS)
-        buf = BytesIO()
-        img.save(buf, format="JPEG", quality=80, optimize=True)
-        buf.seek(0)
-        buf.name = filename
-        return buf
-
-    # Video compression (basic)
-    if filetype.startswith("video"):
-        temp_in = f"temp_in_{filename}"
-        temp_out = f"temp_out_{filename}"
-        with open(temp_in, "wb") as f:
-            f.write(file.getbuffer())
-        try:
-            subprocess.run([
-                "ffmpeg", "-i", temp_in,
-                "-b:v", "1M", "-vf", "scale=1280:-2",
-                "-c:a", "aac", "-y", temp_out
-            ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            with open(temp_out, "rb") as f:
-                data = f.read()
-            os.remove(temp_in); os.remove(temp_out)
-            return BytesIO(data)
-        except Exception:
-            return file
-
-    return file
-
-# -------------------- Session --------------------
-if "admin_visible" not in st.session_state: st.session_state.admin_visible = False
-if "admin_edit_id" not in st.session_state: st.session_state.admin_edit_id = None
-
+# -------------------- Secrets --------------------
 FORM_URL = st.secrets.get("GOOGLE_FORM_URL", "#")
 WHATSAPP = st.secrets.get("WHATSAPP_NUMBER", "")
 wa_link = f"https://wa.me/{WHATSAPP}" if WHATSAPP else "#"
 
 # -------------------- Hero Section --------------------
+
 hero_image_path = "assets/b1.jpg"
+
 if os.path.exists(hero_image_path):
-    img_b64 = get_hero_image_b64(hero_image_path)
+    with open(hero_image_path, "rb") as f:
+        img_b64 = base64.b64encode(f.read()).decode()
+
+    wa_link = "https://wa.me/919999999999"  # 🔸 Replace with your actual WhatsApp link
+
     st.markdown(f"""
     <header class="hero w3-display-container">
-        <img src="data:image/jpg;base64,{img_b64}" class="hero-img" loading="lazy">
+        <img src="data:image/jpg;base64,{img_b64}" class="hero-img">
+
     </header>
     """, unsafe_allow_html=True)
+
 
 # -------------------- About Us --------------------
 st.markdown("""
 <section class="fancy-section" id="about">
-  <h1 class="section-title">All About Us</h1>
+  <h1 class="section-title">☬ All About Us ☬</h1>
   <div class="fancy-content">
     <div class="left">
       <p>ProBuild Rudreshwar Construction & Developers is led by Er. Rushikesh Shivarkar, B.E. Civil — Govt. Contractor & Vastu Expert.</p>
@@ -126,9 +96,45 @@ st.markdown("""
 </section>
 """, unsafe_allow_html=True)
 
-# -------------------- Projects --------------------
-st.markdown("""<section class="fancy-section" id="projects"><h1 class="section-title">Our Projects</h1></section>""", unsafe_allow_html=True)
-projects = cached_projects()
+# -------------------- Our Services --------------------
+st.markdown("""
+<section class="fancy-section" id="services">
+  <h1 class="section-title">☬ Our Services ☬</h1>
+  <div class="fancy-content">
+    <div class="left">
+      <ul>
+        <li>PMC, PMRDA Plan Sanctioning</li>
+        <li>Architectural Drawing & Design</li>
+        <li>Structural Steel Designing</li>
+        <li>3D Bungalow / Building Designing</li>
+      </ul>
+    </div>
+    <div class="divider"></div>
+    <div class="right">
+      <ul>
+        <li>Interior Design — Lock & Key Projects</li>
+        <li>Estimation, Costing & Property Evaluation</li>
+        <li>Pre-Engineering Buildings</li>
+        <li>Warehouses & Godowns</li>
+      </ul>
+    </div>
+  </div>
+</section>
+""", unsafe_allow_html=True)
+
+# -------------------- Our Projects Section --------------------
+st.markdown("""
+<section class="fancy-section" id="projects">
+  <h1 class="section-title">☬ Our Projects ☬</h1>
+</section>
+""", unsafe_allow_html=True)
+
+try:
+    projects = list_projects() or []
+except Exception as e:
+    st.error(f"Error fetching projects: {e}")
+    projects = []
+
 if not projects:
     projects = [
         {"title":"Luxury Villa","description":"Modern villa with eco-friendly materials.","file_url":"https://www.w3schools.com/w3images/fjords.jpg","file_type":"image"},
@@ -147,9 +153,10 @@ for idx, proj in enumerate(projects):
 
         st.markdown(f"""
         <div class="project-container" onclick="document.getElementById('modal-{idx}').style.display='block'">
-          {'<video src="'+file_url+'" autoplay muted loop playsinline></video>' if file_type in ('video','mp4','mov') else '<img src="'+file_url+'" loading="lazy">'}
+          {'<video src="'+file_url+'" autoplay muted loop playsinline></video>' if file_type in ('video','mp4','mov') else '<img src="'+file_url+'">'}
           <div class="project-overlay">{title}</div>
         </div>
+
         <div id="modal-{idx}" class="modal">
           <span class="modal-close" onclick="document.getElementById('modal-{idx}').style.display='none'">&times;</span>
           {'<video src="'+file_url+'" controls autoplay style="width:100%; max-height:80vh;"></video>' if file_type in ('video','mp4','mov') else '<img class="modal-content" src="'+file_url+'">'}
@@ -157,10 +164,10 @@ for idx, proj in enumerate(projects):
         """, unsafe_allow_html=True)
 
         with st.expander("View More"):
-            formatted_desc = "".join([f"<li>{line.strip()}</li>" for line in desc.split("\n") if line.strip()])
-            st.markdown(f"<ul class='viewmore-list'>{formatted_desc}</ul>", unsafe_allow_html=True)
+             formatted_desc = "".join([f"<li>{line.strip()}</li>" for line in desc.split("\n") if line.strip()])
+             st.markdown(f"<ul class='viewmore-list'>{formatted_desc}</ul>", unsafe_allow_html=True)
 
-# -------------------- CTA Marathi --------------------
+# -------------------- Marathi CTA --------------------
 st.markdown(f"""
 <section class="fancy-section" id="cta">
   <h1 class="section-title">तर मग काय वाट बघता? संपर्क करा! 🚀</h1>
@@ -194,19 +201,29 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # -------------------- Admin Panel --------------------
-if st.button("🔒"): st.session_state.admin_visible = not st.session_state.admin_visible
+st.markdown("<hr><h2></h2><hr>", unsafe_allow_html=True)
+
+if st.button("🔒"):
+    st.session_state.admin_visible = not st.session_state.admin_visible
+
 if st.session_state.admin_visible:
     st.markdown('<div class="admin-panel">', unsafe_allow_html=True)
-    password = st.text_input("⚜️", type="password", key="admin_pw")
+
+    # 🔐 Admin Login
+    password = st.text_input("⚜️", type="password", key="admin_pw", placeholder="Enter admin password")
     stored_password = get_password()
 
     if stored_password and password and hash_pass(password) == stored_password:
         st.success("Admin authenticated — upload/manage projects below.")
+
+        # 🔑 ===== Change Password Section =====
         with st.expander("🔐 Change Admin Password"):
             old = st.text_input("Old Password", type="password", key="old_pass")
             new = st.text_input("New Password", type="password", key="new_pass")
             confirm = st.text_input("Confirm New Password", type="password", key="confirm_pass")
-            if st.button("Change Password"):
+            change_btn = st.button("Change Password")
+
+            if change_btn:
                 if hash_pass(old) != stored_password:
                     st.error("❌ Old password is incorrect.")
                 elif new != confirm:
@@ -214,28 +231,38 @@ if st.session_state.admin_visible:
                 elif len(new) < 5:
                     st.warning("⚠️ Password must be at least 5 characters.")
                 else:
-                    set_password(new); st.success("✅ Password changed successfully!"); st.rerun()
+                    set_password(new)
+                    st.success("✅ Password changed successfully! It will apply on next login.")
+                    st.rerun()
 
-        uploaded = st.file_uploader("Upload media", type=["jpg","png","mp4","mov"], key="upload_file")
-        up_title = st.text_input("⚜️ Project Title", key="upload_title")
-        up_desc = st.text_area("⚜️ Project Description", key="upload_desc")
-
+        # ===== Upload New Project =====
+        st.markdown('<h2 class="admin-heading">Upload New Project</h2>', unsafe_allow_html=True)
+        uploaded = st.file_uploader("Upload media (image/video)", type=["jpg","png","mp4","mov"], key="upload_file")
+        up_title = st.text_input("⚜️", key="upload_title", placeholder="Enter Project / Site Name")
+        up_desc = st.text_area("⚜️", key="upload_desc", placeholder="Enter Project Description")
+        
         if st.button("Submit Project"):
             if uploaded and up_title and up_desc:
-                compressed = compress_media(uploaded)
-                url = upload_media(compressed)
+                url = upload_media(uploaded)
                 file_type = uploaded.type.split("/")[0]
                 add_project(up_title, up_desc, url, file_type)
                 st.success("Project uploaded successfully!")
-                st.cache_data.clear()
                 st.rerun()
 
+        # ===== Manage Existing Projects =====
         st.markdown('<h2 class="admin-heading">Manage Existing Projects</h2>', unsafe_allow_html=True)
-        for pr in cached_projects():
+        projects = list_projects() or []
+
+        for pr in projects:
             project_id = pr.get("id")
-            title = pr.get("title", "Untitled")
-            col1, col2, col3 = st.columns([0.7,0.15,0.15])
-            with col1: st.markdown(f"<div class='project-item'><b>{title}</b></div>", unsafe_allow_html=True)
+            project_title = pr.get("title", "Untitled")
+
+            col1, col2, col3 = st.columns([0.7, 0.15, 0.15])
+            with col1:
+                st.markdown(
+                    f"<div class='project-item'><div class='title'><b>{project_title}</b></div></div>",
+                    unsafe_allow_html=True,
+                )
             with col2:
                 if st.button("Edit", key=f"edit-{project_id}"):
                     st.session_state.admin_edit_id = project_id
@@ -245,25 +272,28 @@ if st.session_state.admin_visible:
                 if st.button("Delete", key=f"delete-{project_id}"):
                     delete_project(project_id)
                     st.success("Deleted successfully!")
-                    st.cache_data.clear()
                     st.rerun()
 
+        # ===== Edit Project Form =====
         if st.session_state.admin_edit_id:
-            new_title = st.text_input("Title", st.session_state.admin_edit_title)
-            new_desc = st.text_area("Description", st.session_state.admin_edit_desc)
+            st.markdown('<h2 class="admin-heading">Edit Project</h2>', unsafe_allow_html=True)
+            new_title = st.text_input("Title", st.session_state.admin_edit_title, placeholder="Project / Site Name")
+            new_desc = st.text_area("Description", st.session_state.admin_edit_desc, placeholder="Project Description")
             new_file = st.file_uploader("Replace Media (optional)", type=["jpg","png","mp4","mov"])
+            
             if st.button("Save Changes"):
-                file_url = None; file_type = None
+                file_url = None
+                file_type = None
                 if new_file:
-                    compressed = compress_media(new_file)
-                    file_url = upload_media(compressed)
+                    file_url = upload_media(new_file)
                     file_type = new_file.type.split("/")[0]
                 update_project(st.session_state.admin_edit_id, new_title, new_desc, file_url, file_type)
                 st.success("Updated!")
                 st.session_state.admin_edit_id = None
-                st.cache_data.clear()
                 st.rerun()
 
     else:
-        if password: st.error("❌ Wrong password.")
+        if password:
+            st.error("❌ Wrong password.")
+    
     st.markdown("</div>", unsafe_allow_html=True)
