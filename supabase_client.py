@@ -4,6 +4,7 @@ from supabase import create_client
 import re
 import uuid
 import time
+import traceback
 
 # ------------------------------------------------------------------
 # Load keys from Streamlit secrets
@@ -29,30 +30,53 @@ def sanitize_filename(filename: str) -> str:
     return re.sub(r"[^\w\.\-]", "_", filename)
 
 
-def upload_media(file):
-    import streamlit as st
-    import traceback
-
-    file_bytes = file.read()
-    file_path = file.name
-
+# ------------------------------------------------------------------
+# Media Upload
+# ------------------------------------------------------------------
+def upload_media(file) -> str:
+    """
+    Upload a Streamlit UploadedFile to Supabase Storage 'media' bucket and return public URL.
+    Uses service key (write permissions).
+    """
     try:
+        # ✅ Create supabase client with service key for write access
+        supabase = get_supabase_client(service=True)
+
+        # ✅ Sanitize filename
+        safe_name = sanitize_filename(file.name)
+
+        # ✅ Add unique suffix to prevent duplicate name errors
+        unique_suffix = f"_{int(time.time())}_{uuid.uuid4().hex[:6]}"
+        name_parts = safe_name.split(".")
+        if len(name_parts) > 1:
+            new_name = f"{'.'.join(name_parts[:-1])}{unique_suffix}.{name_parts[-1]}"
+        else:
+            new_name = f"{safe_name}{unique_suffix}"
+
+        file_path = f"media/{new_name}"
+        file_bytes = file.read()
+
+        # ✅ Upload to Supabase Storage
         supabase.storage.from_("media").upload(file_path, file_bytes)
-        url = supabase.storage.from_("media").get_public_url(file_path)
+
+        # ✅ Get public URL
+        public_url = supabase.storage.from_("media").get_public_url(file_path)
         st.success("✅ File uploaded successfully!")
-        return url
+        return public_url
+
     except Exception as e:
-        traceback.print_exc()  # shows full backend traceback in Streamlit logs
+        traceback.print_exc()  # Full traceback in logs
         st.error(f"❌ Upload failed — raw error: {repr(e)}")
-        raise  # optional: re-raise to also show traceback in app logs
+        raise
 
 
-
+# ------------------------------------------------------------------
+# Projects Table Operations
+# ------------------------------------------------------------------
 def add_project(title: str, description: str, file_url: str, file_type: str, is_banner: bool = False):
     """
     Insert a new project row into 'projects' table.
-    Fields: title, description, file_url, file_type, is_banner
-    Uses service key.
+    Uses service key (write access).
     """
     supabase = get_supabase_client(service=True)
     payload = {
@@ -74,12 +98,10 @@ def list_projects(limit: int = 1000):
     supabase = get_supabase_client(service=False)
     try:
         res = supabase.table("projects").select("*").order("created_at", desc=True).limit(limit).execute()
-        # Newer SDKs: res.data
         if hasattr(res, "data") and res.data is not None:
             return res.data
-        # Fallback
         try:
-            return res.get("data", [])  # some SDK versions return dict-like
+            return res.get("data", [])
         except Exception:
             return []
     except Exception as e:
