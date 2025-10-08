@@ -46,16 +46,8 @@ FORM_URL = st.secrets.get("GOOGLE_FORM_URL", "#")
 WHATSAPP = st.secrets.get("WHATSAPP_NUMBER", "")
 wa_link = f"https://wa.me/{WHATSAPP}" if WHATSAPP else "#"
 
-# -------------------- Hero Section --------------------
-hero_image_path = "assets/b1.jpg"
-if os.path.exists(hero_image_path):
-    with open(hero_image_path, "rb") as f:
-        img_b64 = base64.b64encode(f.read()).decode()
-    st.markdown(f"""
-    <header class="hero w3-display-container">
-        <img src="data:image/jpg;base64,{img_b64}" class="hero-img">
-    </header>
-    """, unsafe_allow_html=True)
+# Hero removed for Safari compatibility
+
 
 # -------------------- About Us --------------------
 st.markdown("""
