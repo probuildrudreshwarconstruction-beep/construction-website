@@ -1,179 +1,230 @@
 import streamlit as st
-import base64
-import os
-from datetime import datetime
+from supabase_client import upload_media, add_project, list_projects, delete_project, update_project
+import os, base64, json, hashlib
 
-# -------------------- PAGE CONFIG --------------------
-st.set_page_config(
-    page_title="ProBuild Rudreshwar Constructions",
-    page_icon="🏗️",
-    layout="wide"
-)
+# -------------------- Password Config --------------------
+PASS_FILE = "admin_password.json"
 
-# -------------------- LOAD SECRETS --------------------
-COMPANY_NAME = st.secrets.get("COMPANY_NAME", "Company")
-TAGLINE = st.secrets.get("TAGLINE", "")
-FORM_URL = st.secrets.get("GOOGLE_FORM_URL", "#")
-FORM_RESPONSES_URL = st.secrets.get("GOOGLE_FORM_RESPONSES_URL", "#")
-WHATSAPP_NUMBER = st.secrets.get("WHATSAPP_NUMBER", "")
-EMAIL = st.secrets.get("EMAIL", "")
-INSTAGRAM_URL = st.secrets.get("INSTAGRAM_URL", "")
-ADMIN_PASSWORD = st.secrets.get("ADMIN_PASSWORD", "")
+def hash_pass(p):
+    return hashlib.sha256(p.encode()).hexdigest()
 
-# -------------------- CUSTOM CSS --------------------
+def get_password():
+    if os.path.exists(PASS_FILE):
+        with open(PASS_FILE, "r") as f:
+            return json.load(f).get("password")
+    elif "admin_password" in st.secrets:
+        return hash_pass(st.secrets["admin_password"])
+    return None
+
+def set_password(new_pass):
+    with open(PASS_FILE, "w") as f:
+        json.dump({"password": hash_pass(new_pass)}, f)
+
+# -------------------- Base64 Image Helper --------------------
+def get_base64_image(image_path):
+    """Convert image to Base64 so Streamlit can display it inside HTML."""
+    with open(image_path, "rb") as img_file:
+        return base64.b64encode(img_file.read()).decode()
+
+# -------------------- Load external CSS --------------------
+def local_css(file_name):
+    if os.path.exists(file_name):
+        with open(file_name) as f:
+            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+    else:
+        st.warning(f"CSS file '{file_name}' not found.")
+
+local_css("style.css")  # Load your style.css directly
+# -------------------- Hide Streamlit Default Header & Footer --------------------
 st.markdown("""
 <style>
-/* Remove Streamlit default top bar */
-header[data-testid="stHeader"] {
-    display: none !important;
-}
-
-/* Hide hamburger menu */
+header[data-testid="stHeader"] {display: none !important;}
 #MainMenu {visibility: hidden;}
-
-/* Hide footer */
 footer {visibility: hidden;}
-
-/* Remove top spacing */
-main.block-container {
-    padding-top: 0rem !important;
-    margin-top: -3rem !important;
-}
-
-/* Optional padding fix */
-section[data-testid="stAppViewBlockContainer"] {
-    padding-top: 0rem !important;
-    margin-top: -2rem !important;
-}
-
-/* Hide floating GitHub icon */
-a[data-testid="stActionButtonIcon"] {
-    display: none !important;
-}
-
-/* Hide "Hosted with Streamlit" toolbar */
-[data-testid="stBottomToolbar"] {
-    display: none !important;
-}
-
-/* Typography */
-.hero-title {
-    font-family: 'Cinzel', serif;
-    font-size: 3rem;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 0.5rem;
-}
-
-.hero-tagline {
-    text-align: center;
-    font-size: 1.2rem;
-    color: gray;
-    margin-bottom: 2rem;
-}
-
-/* CTA Buttons */
-.cta-button {
-    background: #1e1e1e;
-    color: #d4af37;
-    padding: 10px 20px;
-    font-size: 1rem;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-.cta-button:hover {
-    background: #d4af37;
-    color: #1e1e1e;
-}
-
-/* Centered section */
-.center {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-    flex-wrap: wrap;
-    margin-top: 20px;
-}
+main.block-container {padding-top: 0rem;}
 </style>
 """, unsafe_allow_html=True)
+# -------------------- Page Config --------------------
+st.set_page_config(page_title=" ProBuild Rudreshwar ", layout="wide")
 
-# -------------------- HEADER SECTION --------------------
-st.markdown(f'<h1 class="hero-title">{COMPANY_NAME}</h1>', unsafe_allow_html=True)
-st.markdown(f'<p class="hero-tagline">{TAGLINE}</p>', unsafe_allow_html=True)
+# -------------------- Session State --------------------
+if "admin_visible" not in st.session_state:
+    st.session_state.admin_visible = False
+if "admin_edit_id" not in st.session_state:
+    st.session_state.admin_edit_id = None
 
-# -------------------- SOCIAL & ENQUIRY BUTTONS --------------------
-st.markdown('<div class="center">', unsafe_allow_html=True)
+# -------------------- Secrets --------------------
+FORM_URL = st.secrets.get("GOOGLE_FORM_URL", "#")
+WHATSAPP = st.secrets.get("WHATSAPP_NUMBER", "")
+EMAIL = st.secrets.get("EMAIL", "mailto:probuilder@example.com")
+INSTA = st.secrets.get("INSTAGRAM_URL", "https://instagram.com/")
+wa_link = f"https://wa.me/{WHATSAPP}" if WHATSAPP else "#"
 
-if FORM_URL != "#":
-    st.markdown(f"""
-        <a href="{FORM_URL}" target="_blank">
-            <button class="cta-button">📩 Enquire via Google Form</button>
-        </a>
-    """, unsafe_allow_html=True)
+# -------------------- Header (Logo + Name) --------------------
+logo_base64 = get_base64_image("assets/logo.png")
 
-if WHATSAPP_NUMBER:
-    st.markdown(f"""
-        <a href="https://wa.me/{WHATSAPP_NUMBER}" target="_blank">
-            <button class="cta-button">💬 WhatsApp</button>
-        </a>
-    """, unsafe_allow_html=True)
+st.markdown(f"""
+<header class="top-header">
+  <div class="header-left">
+    <img src="data:image/png;base64,{logo_base64}" class="company-logo" alt="Logo">
+    <h1 class="company-name">ProBuild Rudreshwar Constructions</h1>
+  </div>
+</header>
+""", unsafe_allow_html=True)
 
-if EMAIL:
-    st.markdown(f"""
-        <a href="{EMAIL}" target="_blank">
-            <button class="cta-button">📧 Email</button>
-        </a>
-    """, unsafe_allow_html=True)
+# -------------------- About Us --------------------
+st.markdown("""
+<section class="fancy-section" id="about">
+  <h1 class="section-title">All About Us</h1>
+  <div class="fancy-content">
+    <div class="left">
+      <p>ProBuild Rudreshwar Construction & Developers is led by <b>Er. Rushikesh Shivarkar</b>, B.E. Civil — Govt. Contractor & Vastu Expert.</p>
+      <ul>
+        <li>Trusted Construction Solutions since 2015</li>
+        <li>Residential & Industrial Projects</li>
+        <li>Modern Design with Structural Integrity</li>
+        <li>Timely Delivery & Cost-effective Solutions</li>
+        <li>Address: Lane No.1, Laxmi Colony, Pune</li>
+        <li>Contact: +91 7745065820</li>
+      </ul>
+    </div>
+  </div>
+</section>
+""", unsafe_allow_html=True)
 
-if INSTAGRAM_URL:
-    st.markdown(f"""
-        <a href="{INSTAGRAM_URL}" target="_blank">
-            <button class="cta-button">📸 Instagram</button>
-        </a>
-    """, unsafe_allow_html=True)
+# -------------------- Our Services --------------------
+st.markdown("""
+<section class="fancy-section" id="services">
+  <h1 class="section-title">Our Services</h1>
+  <div class="fancy-content">
+    <div class="left">
+      <ul>
+        <li>PMC, PMRDA Plan Sanctioning</li>
+        <li>Architectural Drawing & Design</li>
+        <li>Structural Steel Designing</li>
+        <li>3D Bungalow / Building Designing</li>
+        <li>Interior Design — Lock & Key Projects</li>
+        <li>Estimation, Costing & Property Evaluation</li>
+        <li>Pre-Engineering Buildings</li>
+        <li>Warehouses & Godowns</li>
+      </ul>
+    </div>
+  </div>
+</section>
+""", unsafe_allow_html=True)
 
-st.markdown('</div>', unsafe_allow_html=True)
+# -------------------- Our Projects --------------------
+st.markdown("""
+<h1 class="section-title" style="text-align:center; font-family: 'Cinzel', serif;">
+  Our Projects
+</h1>
+""", unsafe_allow_html=True)
 
-# -------------------- ADMIN SECTION --------------------
-st.markdown("---")
-st.markdown("### 🛡️ Admin Panel")
 
-password = st.text_input("Enter admin password", type="password")
+try:
+    projects = list_projects() or []
+except Exception as e:
+    st.error(f"Error fetching projects: {e}")
+    projects = []
 
-if password:
-    if password == ADMIN_PASSWORD:
-        st.success("✅ Admin authenticated successfully")
+if not projects:
+    projects = [
+        {"title": "Luxury Villa", "description": "Modern villa with eco-friendly materials.", "file_url": "https://www.w3schools.com/w3images/fjords.jpg", "file_type": "image"},
+        {"title": "Commercial Renovation", "description": "Revamped commercial complex.", "file_url": "https://www.w3schools.com/w3images/lights.jpg", "file_type": "image"},
+        {"title": "Interior Design", "description": "Elegant interior design.", "file_url": "https://www.w3schools.com/w3images/mountains.jpg", "file_type": "image"}
+    ]
 
-        # 📬 Feedback Section
-        st.markdown('<h2 class="admin-heading">📬 Feedback</h2>', unsafe_allow_html=True)
-        if FORM_RESPONSES_URL != "#":
-            st.markdown(f"""
-                <a href="{FORM_RESPONSES_URL}" target="_blank">
-                    <button class="cta-button">📄 See Feedback</button>
-                </a>
-            """, unsafe_allow_html=True)
-        else:
-            st.info("No feedback link configured.")
+cols = st.columns(3)
+for idx, proj in enumerate(projects):
+    col = cols[idx % 3]
+    with col:
+        file_url = proj.get("file_url", "")
+        file_type = (proj.get("file_type") or "").lower()
+        title = proj.get("title", "Untitled")
+        desc = proj.get("description", "")
+        st.markdown(f"""
+        <div class="project-container" onclick="document.getElementById('modal-{idx}').style.display='block'">
+          {'<video src="'+file_url+'" autoplay muted loop playsinline></video>' if file_type in ('video','mp4','mov') else '<img src="'+file_url+'">'}
+          <div class="project-overlay">{title}</div>
+        </div>
 
-        # 📦 Project management placeholder (you can expand this)
-        with st.expander("🧰 Project Management (Future Section)"):
-            st.write("Here you can add file upload, gallery, etc.")
+        <div id="modal-{idx}" class="modal">
+          <span class="modal-close" onclick="document.getElementById('modal-{idx}').style.display='none'">&times;</span>
+          {'<video src="'+file_url+'" controls autoplay style="width:100%; max-height:80vh;"></video>' if file_type in ('video','mp4','mov') else '<img class="modal-content" src="'+file_url+'">'}
+        </div>
+        """, unsafe_allow_html=True)
+        with st.expander("View More"):
+            formatted_desc = "".join([f"<li>{line.strip()}</li>" for line in desc.split("\n") if line.strip()])
+            st.markdown(f"<ul class='viewmore-list'>{formatted_desc}</ul>", unsafe_allow_html=True)
 
-        # 🔐 Change Password Placeholder
-        with st.expander("🔐 Change Admin Password"):
-            st.info("This feature can be added later to update admin password securely.")
+# -------------------- Address Section --------------------
+st.markdown("""
+<section class="fancy-section address-section">
+  <h1 class="section-title"> Address </h1>
+  <div class="address-card">
+    <p><b>Owner:</b> Er. Rushikesh Shivarkar</p>
+    <p><b>Address:</b> Lane No.1, Laxmi Colony, Pune – 411043</p>
+    <p><b>Contact:</b> +91 7745065820</p>
+  </div>
+</section>
+""", unsafe_allow_html=True)
 
-    else:
-        st.error("❌ Incorrect password. Access denied.")
+# -------------------- Contact Us (CTA) --------------------
+st.markdown(f"""
+<section class="fancy-section" id="cta">
+  <h1 class="section-title">Contact Us</h1>
+  <div class="fancy-content">
+    <div class="left">
+      <a href="{FORM_URL}" target="_blank">
+        <button class="cta-button" style="background:var(--gold); color:#000;">
+          📄 Enquire via Google Form
+        </button>
+      </a>
+    </div>
+    <div class="right">
+      <a href="{wa_link}" target="_blank">
+        <button class="cta-button" style="background:var(--bronze); color:#fff;">
+          💬 WhatsApp
+        </button>
+      </a>
+    </div>
+  </div>
+  <div class="fancy-content" style="margin-top:40px;">
+    <div class="left">
+      <a href="{EMAIL}" target="_blank">
+        <button class="cta-button" style="background:#1e1e1e; color:var(--gold);">
+          ✉️ Email Us
+        </button>
+      </a>
+    </div>
+    <div class="right">
+      <a href="{INSTA}" target="_blank">
+        <button class="cta-button" style="background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af,#515bd4); color:white;">
+          📸 Instagram
+        </button>
+      </a>
+    </div>
+  </div>
+  <p style="text-align:center; margin-top:12px; font-size:0.9rem; opacity:0.8;">© 2025 ProBuild Rudreshwar Constructions</p>
+</section>
+""", unsafe_allow_html=True)
 
-# -------------------- FOOTER --------------------
-st.markdown("---")
-st.caption(f"© {datetime.now().year} {COMPANY_NAME}. All rights reserved.")
+# -------------------- Admin Panel --------------------
+st.markdown("<hr><h2></h2><hr>", unsafe_allow_html=True)
 
-        # -------------------- Change Password --------------------
+if st.button("🔒"):
+    st.session_state.admin_visible = not st.session_state.admin_visible
+
+if st.session_state.admin_visible:
+    st.markdown('<div class="admin-panel">', unsafe_allow_html=True)
+
+    password = st.text_input("⚜️", type="password", key="admin_pw", placeholder="Enter admin password")
+    stored_password = get_password()
+
+    if stored_password and password and hash_pass(password) == stored_password:
+        st.success("Admin authenticated — upload/manage projects below.")
+
+        # Change Password
         with st.expander("🔐 Change Admin Password"):
             old = st.text_input("Old Password", type="password", key="old_pass")
             new = st.text_input("New Password", type="password", key="new_pass")
@@ -192,7 +243,7 @@ st.caption(f"© {datetime.now().year} {COMPANY_NAME}. All rights reserved.")
                     st.success("✅ Password changed successfully! It will apply on next login.")
                     st.rerun()
 
-        # -------------------- Upload New Project --------------------
+        # Upload New Project
         st.markdown('<h2 class="admin-heading">Upload New Project</h2>', unsafe_allow_html=True)
         uploaded = st.file_uploader("Upload media (image/video)", type=["jpg","png","mp4","mov"], key="upload_file")
         up_title = st.text_input("⚜️", key="upload_title", placeholder="Enter Project / Site Name")
@@ -206,7 +257,7 @@ st.caption(f"© {datetime.now().year} {COMPANY_NAME}. All rights reserved.")
                 st.success("Project uploaded successfully!")
                 st.rerun()
 
-        # -------------------- Manage Existing Projects --------------------
+        # Manage Existing Projects
         st.markdown('<h2 class="admin-heading">Manage Existing Projects</h2>', unsafe_allow_html=True)
         projects = list_projects() or []
 
@@ -227,7 +278,7 @@ st.caption(f"© {datetime.now().year} {COMPANY_NAME}. All rights reserved.")
                     st.success("Deleted successfully!")
                     st.rerun()
 
-        # -------------------- Edit Project Form --------------------
+        # Edit Project Form
         if st.session_state.admin_edit_id:
             st.markdown('<h2 class="admin-heading">Edit Project</h2>', unsafe_allow_html=True)
             new_title = st.text_input("Title", st.session_state.admin_edit_title, placeholder="Project / Site Name")
