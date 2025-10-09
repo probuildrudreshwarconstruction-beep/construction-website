@@ -780,3 +780,63 @@ button[kind="secondary"]:hover,
   color: #fff !important;
   box-shadow: 0 0 25px rgba(135, 206, 250, 0.9) !important;
 }
+/* ===== Header (Logo + Company Name) ===== */
+.top-header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 20px 40px;
+  background: #1b0f09;
+  border-bottom: 2px solid var(--gold);
+  box-shadow: 0 0 20px rgba(212,175,55,0.3);
+  margin-bottom: 30px;
+
+  /* 👇 Make header sticky (always visible) */
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.company-logo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--gold);
+  box-shadow: 0 0 15px rgba(212,175,55,0.5);
+}
+
+.company-name {
+  font-family: "Cinzel", serif;
+  font-size: 2rem;
+  color: var(--gold);
+  text-shadow: 0 0 10px rgba(212,175,55,0.5);
+}
+
+/* ===== Address Section ===== */
+.address-section {
+  background: linear-gradient(145deg, #3b2e2a, #8c5e3c);
+  text-align: center;
+  padding: 60px 40px;
+}
+
+.address-card {
+  background: rgba(0,0,0,0.3);
+  border: 2px solid var(--gold);
+  border-radius: 16px;
+  display: inline-block;
+  padding: 20px 40px;
+  box-shadow: 0 0 20px rgba(212,175,55,0.4);
+  color: var(--offwhite);
+  font-size: 1.1rem;
+  font-family: "Playfair Display", serif;
+}
+.address-card p {
+  margin: 10px 0;
+}
