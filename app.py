@@ -85,8 +85,7 @@ st.markdown("""
         <li>Residential & Industrial Projects</li>
         <li>Modern Design with Structural Integrity</li>
         <li>Timely Delivery & Cost-effective Solutions</li>
-        <li>Address: Lane No.1, Laxmi Colony, Pune</li>
-        <li>Contact: +91 7745065820</li>
+
       </ul>
     </div>
   </div>
@@ -104,9 +103,10 @@ st.markdown("""
         <li>Architectural Drawing & Design</li>
         <li>Structural Steel Designing</li>
         <li>3D Bungalow / Building Designing</li>
-        <li>Interior Design — Lock & Key Projects</li>
+        <li>Interior DesignLock & key Project</li>
         <li>Estimation, Costing & Property Evaluation</li>
         <li>Pre-Engineering Buildings</li>
+        <li>Conventional Industrial Building</li>
         <li>Warehouses & Godowns</li>
       </ul>
     </div>
