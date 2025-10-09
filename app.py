@@ -2,6 +2,26 @@ import streamlit as st
 from supabase_client import upload_media, add_project, list_projects, delete_project, update_project
 import os, base64, json, hashlib
 
+# -------------------- Safari Cache Fix --------------------
+# This ensures Safari clears old cached data and cookies automatically when app runs.
+st.markdown("""
+<script>
+(function(){
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+  if(isSafari){
+    try {
+      sessionStorage.clear();
+      localStorage.removeItem("streamlit-preferences");
+      document.cookie.split(";").forEach(function(c) { 
+        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+      });
+      console.log("Safari cache cleared automatically to fix reloading issue");
+    } catch(e){ console.warn("Safari cache clear failed", e); }
+  }
+})();
+</script>
+""", unsafe_allow_html=True)
+
 # -------------------- Password Config --------------------
 PASS_FILE = "admin_password.json"
 
@@ -36,17 +56,6 @@ local_css("style.css")
 # -------------------- Page Config --------------------
 st.set_page_config(page_title="☬ ProBuild Rudreshwar ☬", layout="wide")
 
-# -------------------- SAFARI / CACHE FIX (NEW PART) --------------------
-# 🟢 Inject JS at top to prevent Safari private / cache issues
-st.components.v1.html("""
-<script>
-  // Force no-cache & reset localStorage for Safari if needed
-  if (navigator.userAgent.includes("Safari") && !navigator.userAgent.includes("Chrome")) {
-    try { localStorage.clear(); sessionStorage.clear(); } catch(e) {}
-  }
-</script>
-""", height=0)
-
 # -------------------- Session State --------------------
 if "admin_visible" not in st.session_state:
     st.session_state.admin_visible = False
@@ -63,15 +72,7 @@ wa_link = f"https://wa.me/{WHATSAPP}" if WHATSAPP else "#"
 # -------------------- Header (Logo + Name) --------------------
 logo_base64 = get_base64_image("assets/logo.png")
 
-# 🟢 Added responsive font size fix for .company-name
 st.markdown(f"""
-<style>
-  @media (max-width: 768px) {{
-    .company-name {{
-      font-size: 0.5rem !important;
-    }}
-  }}
-</style>
 <header class="top-header">
   <div class="header-left">
     <img src="data:image/png;base64,{logo_base64}" class="company-logo" alt="Logo">
@@ -187,7 +188,7 @@ st.markdown("""
 </section>
 """, unsafe_allow_html=True)
 
-# -------------------- Contact Us (Former Marathi CTA) --------------------
+# -------------------- Contact Us --------------------
 st.markdown(f"""
 <section class="fancy-section" id="cta">
   <h1 class="section-title">☬ Contact Us ☬</h1>
@@ -228,7 +229,6 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # -------------------- Admin Panel --------------------
-# (UNCHANGED, full original code remains here — nothing touched)
 st.markdown("<hr><h2></h2><hr>", unsafe_allow_html=True)
 
 if st.button("🔒"):
@@ -237,14 +237,13 @@ if st.button("🔒"):
 if st.session_state.admin_visible:
     st.markdown('<div class="admin-panel">', unsafe_allow_html=True)
 
-    # 🔐 Admin Login
     password = st.text_input("⚜️", type="password", key="admin_pw", placeholder="Enter admin password")
     stored_password = get_password()
 
     if stored_password and password and hash_pass(password) == stored_password:
         st.success("Admin authenticated — upload/manage projects below.")
 
-        # 🔑 ===== Change Password Section =====
+        # 🔑 Change Password Section
         with st.expander("🔐 Change Admin Password"):
             old = st.text_input("Old Password", type="password", key="old_pass")
             new = st.text_input("New Password", type="password", key="new_pass")
@@ -263,12 +262,12 @@ if st.session_state.admin_visible:
                     st.success("✅ Password changed successfully! It will apply on next login.")
                     st.rerun()
 
-        # ===== Upload New Project =====
+        # Upload New Project
         st.markdown('<h2 class="admin-heading">Upload New Project</h2>', unsafe_allow_html=True)
         uploaded = st.file_uploader("Upload media (image/video)", type=["jpg","png","mp4","mov"], key="upload_file")
         up_title = st.text_input("⚜️", key="upload_title", placeholder="Enter Project / Site Name")
         up_desc = st.text_area("⚜️", key="upload_desc", placeholder="Enter Project Description")
-        
+
         if st.button("Submit Project"):
             if uploaded and up_title and up_desc:
                 url = upload_media(uploaded)
@@ -277,7 +276,7 @@ if st.session_state.admin_visible:
                 st.success("Project uploaded successfully!")
                 st.rerun()
 
-        # ===== Manage Existing Projects =====
+        # Manage Existing Projects
         st.markdown('<h2 class="admin-heading">Manage Existing Projects</h2>', unsafe_allow_html=True)
         projects = list_projects() or []
 
@@ -302,13 +301,13 @@ if st.session_state.admin_visible:
                     st.success("Deleted successfully!")
                     st.rerun()
 
-        # ===== Edit Project Form =====
+        # Edit Project Form
         if st.session_state.admin_edit_id:
             st.markdown('<h2 class="admin-heading">Edit Project</h2>', unsafe_allow_html=True)
             new_title = st.text_input("Title", st.session_state.admin_edit_title, placeholder="Project / Site Name")
             new_desc = st.text_area("Description", st.session_state.admin_edit_desc, placeholder="Project Description")
             new_file = st.file_uploader("Replace Media (optional)", type=["jpg","png","mp4","mov"])
-            
+
             if st.button("Save Changes"):
                 file_url = None
                 file_type = None
