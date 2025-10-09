@@ -35,7 +35,7 @@ def local_css(file_name):
         st.warning(f"CSS file '{file_name}' not found.")
 
 local_css("style.css")  # Load your style.css directly
-# -------------------- Hide Streamlit UI (Top Bar, GitHub, Crown, Footer) --------------------
+# -------------------- Hide Streamlit Default UI Elements --------------------
 st.markdown("""
 <style>
 /* 🧼 Remove top Streamlit bar */
@@ -45,7 +45,7 @@ header[data-testid="stHeader"] {
 
 /* 🧼 Hide main menu and footer */
 #MainMenu, footer {
-    visibility: hidden;
+    visibility: hidden !important;
 }
 
 /* 🧼 Remove top space caused by Streamlit container */
@@ -54,30 +54,33 @@ main.block-container {
     margin-top: -4rem !important;
 }
 
-/* 🧼 Extra top padding fix */
 section[data-testid="stAppViewBlockContainer"] {
     padding-top: 0rem !important;
     margin-top: -3rem !important;
 }
 
-/* 🛑 Hide GitHub floating button (new selector) */
-button[kind="secondary"] svg {
+/* 🛑 Hide floating GitHub and Hosted badge (multiple fallbacks) */
+div[data-testid="stStatusWidget"],
+div[data-testid="stDecoration"],
+div[data-testid="stAppStatusWidget"],
+div[data-testid="stToolbar"],
+div[aria-label="View source"],
+div[aria-label="Fork this app"],
+a[href*="github.com"],
+button[title="View source"],
+button[title="Fork this app"] {
     display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
 }
 
-/* 🛑 Hide "Hosted with Streamlit" badge (new selector) */
-div[data-testid="stStatusWidget"] {
+/* 🧼 Final catch-all */
+.stDecoration, .stAppStatusWidget, .stStatusWidget, [data-testid="stActionButtonIcon"] {
     display: none !important;
-}
-
-/* 🛑 Hide bottom right toolbar if any */
-div[data-testid="stToolbar"], div[data-testid="stDecoration"] {
-    display: none !important;
-}
-
-/* 🧼 General catch-all for any floating elements */
-.stDecoration, .stActionButton, [data-testid="stActionButtonIcon"] {
-    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
 }
 </style>
 """, unsafe_allow_html=True)
