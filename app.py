@@ -1,7 +1,6 @@
 import streamlit as st
 from supabase_client import upload_media, add_project, list_projects, delete_project, update_project
 import os, base64, json, hashlib
-import streamlit.components.v1 as components
 # -------------------- Password Config --------------------
 PASS_FILE = "admin_password.json"
 
@@ -40,47 +39,15 @@ local_css("style.css")  # Load your style.css directly
 import streamlit as st
 import streamlit.components.v1 as components
 
-# -------------------- Hide Streamlit UI Elements --------------------
+# -------------------- Hide Streamlit Default Header & Footer --------------------
 st.markdown("""
 <style>
-/* Remove top Streamlit bar */
-header[data-testid="stHeader"] {
-    display: none !important;
-}
-#MainMenu, footer {
-    visibility: hidden !important;
-}
-main.block-container {
-    padding-top: 0rem !important;
-    margin-top: -4rem !important;
-}
-section[data-testid="stAppViewBlockContainer"] {
-    padding-top: 0rem !important;
-    margin-top: -3rem !important;
-}
+header[data-testid="stHeader"] {display: none !important;}
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+main.block-container {padding-top: 0rem;}
 </style>
 """, unsafe_allow_html=True)
-
-# 🧨 JavaScript injection to remove GitHub + Hosted badge
-components.html("""
-<script>
-setInterval(() => {
-  // remove GitHub corner button
-  const github = document.querySelector('a[href*="github.com"]');
-  if (github) github.remove();
-
-  // remove Hosted with Streamlit badge
-  const badge = document.querySelector('div[data-testid="stStatusWidget"]') ||
-                document.querySelector('div[aria-label="Hosted with Streamlit"]') ||
-                document.querySelector('div[class*="status"]');
-  if (badge) badge.remove();
-
-  // remove toolbar decorations
-  const decorations = document.querySelectorAll('[data-testid="stDecoration"], [data-testid="stToolbar"], .stDecoration');
-  decorations.forEach(el => el.remove());
-}, 500);
-</script>
-""", height=0)
 
 # -------------------- Page Config --------------------
 st.set_page_config(page_title=" ProBuild Rudreshwar ", layout="wide")
