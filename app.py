@@ -22,7 +22,6 @@ def set_password(new_pass):
 
 # -------------------- Base64 Image Helper --------------------
 def get_base64_image(image_path):
-    """Convert image to Base64 so Streamlit can display it inside HTML."""
     with open(image_path, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode()
 
@@ -34,9 +33,9 @@ def local_css(file_name):
     else:
         st.warning(f"CSS file '{file_name}' not found.")
 
-local_css("style.css")  # Load your style.css directly
+local_css("style.css")
 
-# -------------------- Hide Streamlit Default Header & Footer --------------------
+# -------------------- Hide Streamlit Header & Footer --------------------
 st.markdown("""
 <style>
 header[data-testid="stHeader"] {display: none !important;}
@@ -61,15 +60,10 @@ WHATSAPP = st.secrets.get("WHATSAPP_NUMBER", "")
 EMAIL = st.secrets.get("EMAIL", "mailto:probuilder@example.com")
 INSTA = st.secrets.get("INSTAGRAM_URL", "https://instagram.com/")
 RESPONSES_LINK = st.secrets.get("RESPONSES_LINK", "#")
-if WHATSAPP:
-    clean_whatsapp = WHATSAPP.replace("+", "").replace(" ", "")
-    wa_link = f"https://wa.me/{clean_whatsapp}"
-else:
-    wa_link = "#"
+wa_link = f"https://wa.me/{WHATSAPP.replace('+','').replace(' ','')}" if WHATSAPP else "#"
 
-# -------------------- Header (Logo + Name) --------------------
+# -------------------- Header --------------------
 logo_base64 = get_base64_image("assets/logo.png")
-
 st.markdown(f"""
 <header class="top-header">
   <div class="header-left">
@@ -99,7 +93,7 @@ st.markdown("""
 </section>
 """, unsafe_allow_html=True)
 
-# -------------------- Our Services --------------------
+# -------------------- Services --------------------
 st.markdown("""
 <section class="fancy-section" id="services">
   <h1 class="section-title">Our Services</h1>
@@ -120,75 +114,57 @@ st.markdown("""
 </section>
 """, unsafe_allow_html=True)
 
-# -------------------- Our Projects --------------------
-st.markdown("""
-<h1 class="section-title" style="text-align:center; font-family: 'Cinzel', serif;">
-  Our Projects
-</h1>
-""", unsafe_allow_html=True)
+# -------------------- Projects Section with Video Controls --------------------
+st.markdown("<h1 class='section-title' style='text-align:center;'>Our Projects</h1>", unsafe_allow_html=True)
 
 try:
     projects = list_projects() or []
-except Exception as e:
-    st.error(f"Error fetching projects: {e}")
+except:
     projects = []
 
 if not projects:
     projects = [
-        {"title": "Luxury Villa", "description": "Modern villa with eco-friendly materials.", "file_url": "https://www.w3schools.com/w3images/fjords.jpg", "file_type": "image"},
-        {"title": "Commercial Renovation", "description": "Revamped commercial complex.", "file_url": "https://www.w3schools.com/w3images/lights.jpg", "file_type": "image"},
-        {"title": "Interior Design", "description": "Elegant interior design.", "file_url": "https://www.w3schools.com/w3images/mountains.jpg", "file_type": "image"}
+        {"title":"Luxury Villa","description":"Modern villa with eco-friendly materials.","file_url":"https://www.w3schools.com/w3images/fjords.jpg","file_type":"image"},
+        {"title":"Commercial Renovation","description":"Revamped commercial complex.","file_url":"https://www.w3schools.com/w3images/lights.jpg","file_type":"image"},
+        {"title":"Interior Design","description":"Elegant interior design.","file_url":"https://www.w3schools.com/w3images/mountains.jpg","file_type":"image"}
     ]
 
 cols = st.columns(3)
 for idx, proj in enumerate(projects):
     col = cols[idx % 3]
     with col:
-        file_url = proj.get("file_url", "")
+        title = proj.get("title","Untitled")
+        desc = proj.get("description","")
+        file_url = proj.get("file_url","")
         file_type = (proj.get("file_type") or "").lower()
-        title = proj.get("title", "Untitled")
-        desc = proj.get("description", "")
-        st.markdown(f"""
-        <div class="project-container" onclick="document.getElementById('modal-{idx}').style.display='block'">
-          {f'''
-<div style="
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    background-color:#000;
-    border-radius:16px;
-    overflow:hidden;
-    width:80%;
-    max-width:800px;
-    margin:0 auto;
-">
-  <video controls muted style="width:100%; height:auto; object-fit:contain; background-color:black;">
-    <source src="{file_url}" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
-</div>
-''' if file_type in ('video','mp4','mov') else f'<img src="{file_url}">'}
 
-          <div class="project-overlay">{title}</div>
-        </div>
+        vid_key = f"video_{idx}"
+        if vid_key not in st.session_state:
+            st.session_state[vid_key] = {"playing": False}
 
-        <div id="modal-{idx}" class="modal">
-          <span class="modal-close" onclick="document.getElementById('modal-{idx}').style.display='none'">&times;</span>
-          {f'''
-<div style="display:flex;justify-content:center;align-items:center;background-color:#000;border-radius:16px;overflow:hidden;">
-  <video controls muted style="max-width:100%;max-height:80vh;object-fit:contain;background-color:#000;">
-    <source src="{file_url}" type="video/mp4">
-  </video>
-</div>
-''' if file_type in ('video','mp4','mov') else f'<img class="modal-content" src="{file_url}">'}
+        st.markdown(f"<b>{title}</b>", unsafe_allow_html=True)
 
-        </div>
-        """, unsafe_allow_html=True)
+        if file_type in ("video","mp4","mov"):
+            video_player = st.video(file_url, start_time=0)
+            c1, c2, c3 = st.columns([0.3,0.3,0.4])
+            with c1:
+                if st.button(f"▶️ Play {idx}"):
+                    st.session_state[vid_key]["playing"]=True
+            with c2:
+                if st.button(f"⏸ Pause {idx}"):
+                    st.session_state[vid_key]["playing"]=False
+            with c3:
+                if st.button(f"🔄 Restart {idx}"):
+                    st.session_state[vid_key]["playing"]=False
+                    video_player = st.video(file_url, start_time=0)
+        else:
+            st.image(file_url, caption=title, use_column_width=True)
+
         with st.expander("View More"):
             formatted_desc = "".join([f"<li>{line.strip()}</li>" for line in desc.split("\n") if line.strip()])
             st.markdown(f"<ul class='viewmore-list'>{formatted_desc}</ul>", unsafe_allow_html=True)
 
-# -------------------- Address Section --------------------
+# -------------------- Address --------------------
 st.markdown("""
 <section class="fancy-section address-section">
   <h1 class="section-title"> Address </h1>
@@ -200,40 +176,24 @@ st.markdown("""
 </section>
 """, unsafe_allow_html=True)
 
-# -------------------- Contact Us (CTA) --------------------
+# -------------------- Contact / CTA --------------------
 st.markdown(f"""
 <section class="fancy-section" id="cta">
   <h1 class="section-title">Contact Us</h1>
   <div class="fancy-content">
     <div class="left">
-      <a href="{FORM_URL}" target="_blank">
-        <button class="cta-button" style="background:var(--gold); color:#000;">
-          📄 Enquire via Google Form
-        </button>
-      </a>
+      <a href="{FORM_URL}" target="_blank"><button class="cta-button" style="background:var(--gold); color:#000;">📄 Enquire via Google Form</button></a>
     </div>
     <div class="right">
-      <a href="{wa_link}" target="_blank">
-        <button class="cta-button" style="background:var(--bronze); color:#fff;">
-          💬 WhatsApp
-        </button>
-      </a>
+      <a href="{wa_link}" target="_blank"><button class="cta-button" style="background:var(--bronze); color:#fff;">💬 WhatsApp</button></a>
     </div>
   </div>
   <div class="fancy-content" style="margin-top:40px;">
     <div class="left">
-      <a href="{EMAIL}" target="_blank">
-        <button class="cta-button" style="background:#1e1e1e; color:var(--gold);">
-          ✉️ Email Us
-        </button>
-      </a>
+      <a href="{EMAIL}" target="_blank"><button class="cta-button" style="background:#1e1e1e; color:var(--gold);">✉️ Email Us</button></a>
     </div>
     <div class="right">
-      <a href="{INSTA}" target="_blank">
-        <button class="cta-button" style="background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af,#515bd4); color:white;">
-          📸 Instagram
-        </button>
-      </a>
+      <a href="{INSTA}" target="_blank"><button class="cta-button" style="background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af,#515bd4); color:white;">📸 Instagram</button></a>
     </div>
   </div>
   <p style="text-align:center; margin-top:12px; font-size:0.9rem; opacity:0.8;">© 2025 ProBuild Rudreshwar Constructions</p>
@@ -248,25 +208,19 @@ if st.button("🔒"):
 
 if st.session_state.admin_visible:
     st.markdown('<div class="admin-panel">', unsafe_allow_html=True)
-
     password = st.text_input("⚜️", type="password", key="admin_pw", placeholder="Enter admin password")
     stored_password = get_password()
 
     if stored_password and password and hash_pass(password) == stored_password:
         st.success("Admin authenticated — upload/manage projects below.")
-
-        # ✅ Check Responses Button
         if st.button("📊 Check Responses"):
             st.markdown(f"<meta http-equiv='refresh' content='0; url={RESPONSES_LINK}'>", unsafe_allow_html=True)
 
-        # Change Password
         with st.expander("🔐 Change Admin Password"):
             old = st.text_input("Old Password", type="password", key="old_pass")
             new = st.text_input("New Password", type="password", key="new_pass")
             confirm = st.text_input("Confirm New Password", type="password", key="confirm_pass")
-            change_btn = st.button("Change Password")
-
-            if change_btn:
+            if st.button("Change Password"):
                 if hash_pass(old) != stored_password:
                     st.error("❌ Old password is incorrect.")
                 elif new != confirm:
@@ -275,15 +229,13 @@ if st.session_state.admin_visible:
                     st.warning("⚠️ Password must be at least 5 characters.")
                 else:
                     set_password(new)
-                    st.success("✅ Password changed successfully! It will apply on next login.")
+                    st.success("✅ Password changed successfully!")
                     st.rerun()
 
-        # Upload New Project
         st.markdown('<h2 class="admin-heading">Upload New Project</h2>', unsafe_allow_html=True)
         uploaded = st.file_uploader("Upload media (image/video)", type=["jpg","png","mp4","mov"], key="upload_file")
         up_title = st.text_input("⚜️", key="upload_title", placeholder="Enter Project / Site Name")
         up_desc = st.text_area("⚜️", key="upload_desc", placeholder="Enter Project Description")
-        
         if st.button("Submit Project"):
             if uploaded and up_title and up_desc:
                 url = upload_media(uploaded)
@@ -292,16 +244,14 @@ if st.session_state.admin_visible:
                 st.success("Project uploaded successfully!")
                 st.rerun()
 
-        # Manage Existing Projects
-        st.markdown('<h2 class="admin-heading">Manage Existing Projects</h2>', unsafe_allow_html=True)
+        # Manage existing
         projects = list_projects() or []
-
         for pr in projects:
             project_id = pr.get("id")
             project_title = pr.get("title", "Untitled")
-            col1, col2, col3 = st.columns([0.7, 0.15, 0.15])
+            col1, col2, col3 = st.columns([0.7,0.15,0.15])
             with col1:
-                st.markdown(f"<div class='project-item'><div class='title'><b>{project_title}</b></div></div>", unsafe_allow_html=True)
+                st.markdown(f"<div class='project-item'><b>{project_title}</b></div>", unsafe_allow_html=True)
             with col2:
                 if st.button("Edit", key=f"edit-{project_id}"):
                     st.session_state.admin_edit_id = project_id
@@ -313,13 +263,11 @@ if st.session_state.admin_visible:
                     st.success("Deleted successfully!")
                     st.rerun()
 
-        # Edit Project Form
         if st.session_state.admin_edit_id:
             st.markdown('<h2 class="admin-heading">Edit Project</h2>', unsafe_allow_html=True)
-            new_title = st.text_input("Title", st.session_state.admin_edit_title, placeholder="Project / Site Name")
-            new_desc = st.text_area("Description", st.session_state.admin_edit_desc, placeholder="Project Description")
+            new_title = st.text_input("Title", st.session_state.admin_edit_title)
+            new_desc = st.text_area("Description", st.session_state.admin_edit_desc)
             new_file = st.file_uploader("Replace Media (optional)", type=["jpg","png","mp4","mov"])
-            
             if st.button("Save Changes"):
                 file_url = None
                 file_type = None
@@ -333,5 +281,5 @@ if st.session_state.admin_visible:
     else:
         if password:
             st.error("❌ Wrong password.")
-    
+
     st.markdown("</div>", unsafe_allow_html=True)
