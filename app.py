@@ -146,13 +146,13 @@ for idx, proj in enumerate(projects):
         desc = proj.get("description", "")
         st.markdown(f"""
         <div class="project-container" onclick="document.getElementById('modal-{idx}').style.display='block'">
-          {'<video src="'+file_url+'" autoplay muted loop playsinline></video>' if file_type in ('video','mp4','mov') else '<img src="'+file_url+'">'}
+          {('<video src="'+file_url+'" controls preload="none" poster="" style="width:100%;height:100%;object-fit:cover;"></video>') if file_type in ('video','mp4','mov') else '<img src="'+file_url+'">'}
           <div class="project-overlay">{title}</div>
         </div>
 
         <div id="modal-{idx}" class="modal">
           <span class="modal-close" onclick="document.getElementById('modal-{idx}').style.display='none'">&times;</span>
-          {'<video src="'+file_url+'" controls autoplay style="width:100%; max-height:80vh;"></video>' if file_type in ('video','mp4','mov') else '<img class="modal-content" src="'+file_url+'">'}
+          {('<video src="'+file_url+'" controls preload="metadata" style="width:100%; max-height:80vh;"></video>') if file_type in ('video','mp4','mov') else '<img class="modal-content" src="'+file_url+'">'}
         </div>
         """, unsafe_allow_html=True)
         with st.expander("View More"):
