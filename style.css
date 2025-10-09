@@ -28,7 +28,7 @@ h1, h2, h3, h4, h5, h6, .hero-title, .section-title {
     top: 0;
     z-index: 9999;
     background-color: var(--bg);
-    padding: 10px 20px;
+    padding: 8px 10px;
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -836,71 +836,57 @@ button[kind="secondary"]:hover,
   from { box-shadow: 0 0 10px rgba(212,175,55,0.3); }
   to { box-shadow: 0 0 25px rgba(212,175,55,0.6); }
 }
-/* Mobile & Tablet Responsive Fix */
+/* 🌐 Mobile & Tablet Adjustments */
 @media screen and (max-width: 768px) {
+  
+  /* Fix header to top and make company name smaller */
+  .top-header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 999;
+    padding: 8px 10px; /* reduce padding for smaller screens */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 
-    /* Make header items stacked only if necessary */
-    .top-header {
-        flex-direction: row;
-        justify-content: center;
-        gap: 10px;
-        padding: 8px 12px;
-    }
+  .company-logo {
+    max-width: 120px; /* smaller logo */
+    height: auto;
+    margin-bottom: 5px;
+  }
 
-    .company-logo {
-        width: 50px;
-        height: 50px;
-    }
+  .company-name {
+    font-size: 1.2rem; /* smaller font */
+    text-align: center;
+    white-space: nowrap; /* keep on single line */
+  }
 
-    .company-name {
-        font-size: 1.2rem;
-        white-space: nowrap;       /* Prevent line breaks */
-        text-align: center;
-    }
+  /* Adjust About/Services/Projects headings */
+  .section-title {
+    font-size: 1.4rem; /* smaller headings for mobile */
+  }
 
-    /* Reduce heading sizes for sections */
-    .section-title {
-        font-size: 1.5rem;
-    }
+  /* Adjust CTA / Contact buttons */
+  .cta-button {
+    font-size: 0.9rem; /* smaller buttons */
+    padding: 8px 12px;
+  }
 
-    /* Reduce paragraph font size */
-    p {
-        font-size: 0.9rem;
-        line-height: 1.4;
-    }
+  /* Project containers */
+  .project-container {
+    width: 100% !important; /* full width for mobile */
+    margin-bottom: 15px;
+  }
 
-    /* Project containers smaller */
-    .project-container {
-        width: 90% !important;
-        margin: 10px auto !important;
-    }
-
-    /* Stack left/right content vertically */
-    .fancy-content {
-        flex-direction: column !important;
-        align-items: center !important;
-    }
-
-    /* CTA buttons smaller */
-    .cta-button {
-        font-size: 0.9rem;
-        padding: 6px 10px;
-    }
-}
-
-/* For extra small screens */
-@media screen and (max-width: 480px) {
-    .company-logo {
-        width: 40px;
-        height: 40px;
-    }
-    .company-name {
-        font-size: 1rem;
-    }
-    .section-title {
-        font-size: 1.2rem;
-    }
-    p {
-        font-size: 0.85rem;
-    }
+  /* Modal images/videos */
+  .modal-content, video {
+    max-height: 60vh; /* reduce size to fit screen */
+  }
+  
+  /* Address section */
+  .address-card p {
+    font-size: 0.85rem;
+  }
 }
