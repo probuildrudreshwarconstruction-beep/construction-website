@@ -107,8 +107,11 @@ st.markdown("""
 
 # -------------------- Our Projects --------------------
 st.markdown("""
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+<h1 class="section-title" style="text-align:center; font-family: 'Cinzel', serif;">
+  Our Projects
+</h1>
 """, unsafe_allow_html=True)
+
 
 try:
     projects = list_projects() or []
