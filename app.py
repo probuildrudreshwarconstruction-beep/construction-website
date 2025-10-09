@@ -47,7 +47,7 @@ main.block-container {padding-top: 0rem;}
 """, unsafe_allow_html=True)
 
 # -------------------- Page Config --------------------
-st.set_page_config(page_title=" ProBuild Rudreshwar ", layout="wide")
+st.set_page_config(page_title="ProBuild Rudreshwar", layout="wide")
 
 # -------------------- Session State --------------------
 if "admin_visible" not in st.session_state:
@@ -66,7 +66,6 @@ if WHATSAPP:
     wa_link = f"https://wa.me/{clean_whatsapp}"
 else:
     wa_link = "#"
-
 
 # -------------------- Header (Logo + Name) --------------------
 logo_base64 = get_base64_image("assets/logo.png")
@@ -151,13 +150,38 @@ for idx, proj in enumerate(projects):
         desc = proj.get("description", "")
         st.markdown(f"""
         <div class="project-container" onclick="document.getElementById('modal-{idx}').style.display='block'">
-          {'<video src="'+file_url+'" autoplay muted loop playsinline></video>' if file_type in ('video','mp4','mov') else '<img src="'+file_url+'">'}
+          {f'''
+<div style="
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background-color:#000;
+    border-radius:16px;
+    overflow:hidden;
+    width:80%;
+    max-width:800px;
+    margin:0 auto;
+">
+  <video controls muted style="width:100%; height:auto; object-fit:contain; background-color:black;">
+    <source src="{file_url}" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+</div>
+''' if file_type in ('video','mp4','mov') else f'<img src="{file_url}">'}
+
           <div class="project-overlay">{title}</div>
         </div>
 
         <div id="modal-{idx}" class="modal">
           <span class="modal-close" onclick="document.getElementById('modal-{idx}').style.display='none'">&times;</span>
-          {'<video src="'+file_url+'" controls autoplay style="width:100%; max-height:80vh;"></video>' if file_type in ('video','mp4','mov') else '<img class="modal-content" src="'+file_url+'">'}
+          {f'''
+<div style="display:flex;justify-content:center;align-items:center;background-color:#000;border-radius:16px;overflow:hidden;">
+  <video controls muted style="max-width:100%;max-height:80vh;object-fit:contain;background-color:#000;">
+    <source src="{file_url}" type="video/mp4">
+  </video>
+</div>
+''' if file_type in ('video','mp4','mov') else f'<img class="modal-content" src="{file_url}">'}
+
         </div>
         """, unsafe_allow_html=True)
         with st.expander("View More"):
