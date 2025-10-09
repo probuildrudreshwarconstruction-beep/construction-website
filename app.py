@@ -72,7 +72,7 @@ if "admin_edit_id" not in st.session_state:
 # -------------------- Secrets --------------------
 FORM_URL = st.secrets.get("GOOGLE_FORM_URL", "#")
 WHATSAPP = st.secrets.get("WHATSAPP_NUMBER", "")
-EMAIL = st.secrets.get("EMAIL", "mailto:probuilder@example.com")
+EMAIL = st.secrets.get("EMAIL", "mailto:probuildrudreshwarconstruction@gmail.com")
 INSTA = st.secrets.get("INSTAGRAM_URL", "https://instagram.com/")
 wa_link = f"https://wa.me/{WHATSAPP}" if WHATSAPP else "#"
 
