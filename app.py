@@ -37,7 +37,7 @@ def local_css(file_name):
 local_css("style.css")  # Load your style.css directly
 
 # -------------------- Page Config --------------------
-st.set_page_config(page_title="☬ ProBuild Rudreshwar ☬", layout="wide")
+st.set_page_config(page_title=" ProBuild Rudreshwar ", layout="wide")
 
 # -------------------- Session State --------------------
 if "admin_visible" not in st.session_state:
@@ -67,7 +67,7 @@ st.markdown(f"""
 # -------------------- About Us --------------------
 st.markdown("""
 <section class="fancy-section" id="about">
-  <h1 class="section-title">☬ All About Us ☬</h1>
+  <h1 class="section-title">All About Us</h1>
   <div class="fancy-content">
     <div class="left">
       <p>ProBuild Rudreshwar Construction & Developers is led by <b>Er. Rushikesh Shivarkar</b>, B.E. Civil — Govt. Contractor & Vastu Expert.</p>
@@ -93,7 +93,7 @@ st.markdown("""
 # -------------------- Our Services --------------------
 st.markdown("""
 <section class="fancy-section" id="services">
-  <h1 class="section-title">☬ Our Services ☬</h1>
+  <h1 class="section-title">Our Services</h1>
   <div class="fancy-content">
     <div class="left">
       <ul>
@@ -119,7 +119,7 @@ st.markdown("""
 # -------------------- Our Projects --------------------
 st.markdown("""
 <section class="fancy-section" id="projects">
-  <h1 class="section-title">☬ Our Projects ☬</h1>
+  <h1 class="section-title">Our Projects</h1>
 </section>
 """, unsafe_allow_html=True)
 
@@ -162,7 +162,7 @@ for idx, proj in enumerate(projects):
 # -------------------- Address Section --------------------
 st.markdown("""
 <section class="fancy-section address-section">
-  <h1 class="section-title">☬ Address ☬</h1>
+  <h1 class="section-title"> Address </h1>
   <div class="address-card">
     <p><b>Owner:</b> Er. Rushikesh Shivarkar</p>
     <p><b>Address:</b> Lane No.1, Laxmi Colony, Pune – 411043</p>
@@ -174,7 +174,7 @@ st.markdown("""
 # -------------------- Contact Us (CTA) --------------------
 st.markdown(f"""
 <section class="fancy-section" id="cta">
-  <h1 class="section-title">☬ Contact Us ☬</h1>
+  <h1 class="section-title">Contact Us</h1>
   <div class="fancy-content">
     <div class="left">
       <a href="{FORM_URL}" target="_blank">
