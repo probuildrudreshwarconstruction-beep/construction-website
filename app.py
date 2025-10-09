@@ -75,12 +75,6 @@ st.markdown("""
         <li>Trusted Construction Solutions since 2015</li>
         <li>Residential & Industrial Projects</li>
         <li>Modern Design with Structural Integrity</li>
-      </ul>
-    </div>
-    <div class="divider"></div>
-    <div class="right">
-      <p>We specialize in delivering timely and high-quality construction services tailored to client needs.</p>
-      <ul>
         <li>Timely Delivery & Cost-effective Solutions</li>
         <li>Address: Lane No.1, Laxmi Colony, Pune</li>
         <li>Contact: +91 7745065820</li>
