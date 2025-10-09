@@ -814,7 +814,7 @@ button[kind="secondary"]:hover,
 
 .company-name {
   font-family: "Cinzel", serif;
-  font-size: 1.5rem;
+  font-size: 0.7rem;
   color: var(--gold);
   text-shadow: 0 0 10px rgba(212,175,55,0.6);
 }
