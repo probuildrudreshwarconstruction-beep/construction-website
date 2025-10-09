@@ -240,6 +240,14 @@ if st.session_state.admin_visible:
     if stored_password and password and hash_pass(password) == stored_password:
         st.success("Admin authenticated — upload/manage projects below.")
 
+
+    # -------------------- 📬 Admin: See Feedback Section --------------------
+    with st.expander("📬 See Feedback Responses"):
+        st.components.v1.iframe(
+            "https://docs.google.com/spreadsheets/d/10if7tFLUNMC_54f_AMrzoa2b_hNBTjHD4bat9HZ2U8c/edit?resourcekey=&gid=1569695853#gid=1569695853",
+            height=600
+        )
+
         # Change Password
         with st.expander("🔐 Change Admin Password"):
             old = st.text_input("Old Password", type="password", key="old_pass")
