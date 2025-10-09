@@ -35,9 +35,40 @@ def local_css(file_name):
         st.warning(f"CSS file '{file_name}' not found.")
 
 local_css("style.css")  # Load your style.css directly
+# -------------------- Hide Streamlit Default Header & Footer --------------------
+st.markdown("""
+<style>
+/* Remove Streamlit top black header (Fork, GitHub, Menu) */
+header[data-testid="stHeader"] {
+    display: none !important;
+}
+
+/* Remove Streamlit hamburger main menu */
+#MainMenu {visibility: hidden;}
+
+/* Remove footer text "Made with Streamlit" */
+footer {visibility: hidden;}
+
+/* Optional: remove empty top padding so content shifts up */
+main.block-container {
+    padding-top: 0rem;
+}
+</style>
+""", unsafe_allow_html=True)
 
 # -------------------- Page Config --------------------
 st.set_page_config(page_title=" ProBuild Rudreshwar ", layout="wide")
+
+
+# -------------------- Load external CSS --------------------
+def local_css(file_name):
+    if os.path.exists(file_name):
+        with open(file_name) as f:
+            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+    else:
+        st.warning(f"CSS file '{file_name}' not found.")
+
+local_css("style.css")  # Load your style.css directly
 
 # -------------------- Session State --------------------
 if "admin_visible" not in st.session_state:
