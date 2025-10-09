@@ -35,44 +35,48 @@ def local_css(file_name):
         st.warning(f"CSS file '{file_name}' not found.")
 
 local_css("style.css")  # Load your style.css directly
-# -------------------- Hide Streamlit Default Header & Footer + Remove Blank Space --------------------
+# -------------------- Hide Streamlit UI (Top Bar, GitHub, Crown, Footer) --------------------
 st.markdown("""
 <style>
-/* Remove Streamlit default top bar */
+/* 🧼 Remove top Streamlit bar */
 header[data-testid="stHeader"] {
     display: none !important;
 }
 
-/* Hide the hamburger menu */
-#MainMenu {visibility: hidden;}
+/* 🧼 Hide main menu and footer */
+#MainMenu, footer {
+    visibility: hidden;
+}
 
-/* Hide footer */
-footer {visibility: hidden;}
-
-/* Remove default Streamlit top padding/margin */
+/* 🧼 Remove top space caused by Streamlit container */
 main.block-container {
     padding-top: 0rem !important;
-    margin-top: -3rem !important;  /* 👈 This line pulls everything up */
+    margin-top: -4rem !important;
 }
 
-/* Optional: If still some space remains due to header container */
+/* 🧼 Extra top padding fix */
 section[data-testid="stAppViewBlockContainer"] {
     padding-top: 0rem !important;
-    margin-top: -2rem !important;
+    margin-top: -3rem !important;
 }
 
-/* 🛑 Hide the floating GitHub circle button */
-a[data-testid="stActionButtonIcon"] {
+/* 🛑 Hide GitHub floating button (new selector) */
+button[kind="secondary"] svg {
     display: none !important;
 }
 
-/* 🛑 Hide the "Hosted with Streamlit" red crown badge */
-div[data-testid="stBottomToolbar"] {
+/* 🛑 Hide "Hosted with Streamlit" badge (new selector) */
+div[data-testid="stStatusWidget"] {
     display: none !important;
 }
 
-/* Fallback: hide any toolbar that may appear */
-.stApp [data-testid="stToolbar"] {
+/* 🛑 Hide bottom right toolbar if any */
+div[data-testid="stToolbar"], div[data-testid="stDecoration"] {
+    display: none !important;
+}
+
+/* 🧼 General catch-all for any floating elements */
+.stDecoration, .stActionButton, [data-testid="stActionButtonIcon"] {
     display: none !important;
 }
 </style>
