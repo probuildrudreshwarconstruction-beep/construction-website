@@ -35,6 +35,7 @@ def local_css(file_name):
         st.warning(f"CSS file '{file_name}' not found.")
 
 local_css("style.css")  # Load your style.css directly
+
 # -------------------- Hide Streamlit Default Header & Footer --------------------
 st.markdown("""
 <style>
@@ -44,6 +45,7 @@ footer {visibility: hidden;}
 main.block-container {padding-top: 0rem;}
 </style>
 """, unsafe_allow_html=True)
+
 # -------------------- Page Config --------------------
 st.set_page_config(page_title=" ProBuild Rudreshwar ", layout="wide")
 
@@ -58,6 +60,7 @@ FORM_URL = st.secrets.get("GOOGLE_FORM_URL", "#")
 WHATSAPP = st.secrets.get("WHATSAPP_NUMBER", "")
 EMAIL = st.secrets.get("EMAIL", "mailto:probuilder@example.com")
 INSTA = st.secrets.get("INSTAGRAM_URL", "https://instagram.com/")
+RESPONSES_LINK = st.secrets.get("RESPONSES_LINK", "#")
 wa_link = f"https://wa.me/{WHATSAPP}" if WHATSAPP else "#"
 
 # -------------------- Header (Logo + Name) --------------------
@@ -119,7 +122,6 @@ st.markdown("""
   Our Projects
 </h1>
 """, unsafe_allow_html=True)
-
 
 try:
     projects = list_projects() or []
@@ -223,6 +225,10 @@ if st.session_state.admin_visible:
 
     if stored_password and password and hash_pass(password) == stored_password:
         st.success("Admin authenticated — upload/manage projects below.")
+
+        # ✅ Check Responses Button
+        if st.button("📊 Check Responses"):
+            st.markdown(f"<meta http-equiv='refresh' content='0; url={RESPONSES_LINK}'>", unsafe_allow_html=True)
 
         # Change Password
         with st.expander("🔐 Change Admin Password"):
