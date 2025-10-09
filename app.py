@@ -319,4 +319,3 @@ else:
     if password:
         st.error("❌ Wrong password.")
 
-    st.markdown("</div>", unsafe_allow_html=True)
