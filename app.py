@@ -225,97 +225,80 @@ st.markdown(f"""
 </section>
 """, unsafe_allow_html=True)
 
-# ========================== 🛡️ ADMIN PANEL SECTION ==========================
+# -------------------- 📬 Admin: See Feedback Section --------------------
+        # Change Password
+        with st.expander("🔐 Change Admin Password"):
+            old = st.text_input("Old Password", type="password", key="old_pass")
+            new = st.text_input("New Password", type="password", key="new_pass")
+            confirm = st.text_input("Confirm New Password", type="password", key="confirm_pass")
+            change_btn = st.button("Change Password")
 
-if stored_password and password and hash_pass(password) == stored_password:
-    st.success("🛡️ Admin authenticated — manage your website here.")
-    
-    # -------------------- 📬 See Feedback Responses --------------------
-    with st.expander("📬 See Feedback Responses"):
-        st.components.v1.iframe(
-            "https://docs.google.com/spreadsheets/d/10if7tFLUNMC_54f_AMrzoa2b_hNBTjHD4bat9HZ2U8c/edit?resourcekey=&gid=1569695853#gid=1569695853",
-            height=600
-        )
+            if change_btn:
+                if hash_pass(old) != stored_password:
+                    st.error("❌ Old password is incorrect.")
+                elif new != confirm:
+                    st.warning("⚠️ New passwords do not match.")
+                elif len(new) < 5:
+                    st.warning("⚠️ Password must be at least 5 characters.")
+                else:
+                    set_password(new)
+                    st.success("✅ Password changed successfully! It will apply on next login.")
+                    st.rerun()
 
-    # -------------------- 🔐 Change Password Section --------------------
-    with st.expander("🔐 Change Admin Password"):
-        old = st.text_input("Old Password", type="password", key="old_pass")
-        new = st.text_input("New Password", type="password", key="new_pass")
-        confirm = st.text_input("Confirm New Password", type="password", key="confirm_pass")
-        change_btn = st.button("Change Password")
-
-        if change_btn:
-            if hash_pass(old) != stored_password:
-                st.error("❌ Old password is incorrect.")
-            elif new != confirm:
-                st.warning("⚠️ New passwords do not match.")
-            elif len(new) < 5:
-                st.warning("⚠️ Password must be at least 5 characters.")
-            else:
-                set_password(new)
-                st.success("✅ Password changed successfully! It will apply on next login.")
-                st.rerun()
-
-    # -------------------- 📤 Upload New Project --------------------
-    st.markdown('<h2 class="admin-heading">Upload New Project</h2>', unsafe_allow_html=True)
-    uploaded = st.file_uploader("Upload media (image/video)", type=["jpg", "png", "mp4", "mov"], key="upload_file")
-    up_title = st.text_input("⚜️", key="upload_title", placeholder="Enter Project / Site Name")
-    up_desc = st.text_area("⚜️", key="upload_desc", placeholder="Enter Project Description")
+        # Upload New Project
+        st.markdown('<h2 class="admin-heading">Upload New Project</h2>', unsafe_allow_html=True)
+        uploaded = st.file_uploader("Upload media (image/video)", type=["jpg","png","mp4","mov"], key="upload_file")
+        up_title = st.text_input("⚜️", key="upload_title", placeholder="Enter Project / Site Name")
+        up_desc = st.text_area("⚜️", key="upload_desc", placeholder="Enter Project Description")
         
-    if st.button("Submit Project"):
-        if uploaded and up_title and up_desc:
-            url = upload_media(uploaded)
-            file_type = uploaded.type.split("/")[0]
-            add_project(up_title, up_desc, url, file_type)
-            st.success("✅ Project uploaded successfully!")
-            st.rerun()
-        else:
-            st.warning("⚠️ Please fill in all fields and upload a file.")
-
-    # -------------------- 🗂️ Manage Existing Projects --------------------
-    st.markdown('<h2 class="admin-heading">Manage Existing Projects</h2>', unsafe_allow_html=True)
-    projects = list_projects() or []
-
-    for pr in projects:
-        project_id = pr.get("id")
-        project_title = pr.get("title", "Untitled")
-        col1, col2, col3 = st.columns([0.7, 0.15, 0.15])
-
-        with col1:
-            st.markdown(
-                f"<div class='project-item'><div class='title'><b>{project_title}</b></div></div>",
-                unsafe_allow_html=True
-            )
-        with col2:
-            if st.button("Edit", key=f"edit-{project_id}"):
-                st.session_state.admin_edit_id = project_id
-                st.session_state.admin_edit_title = pr.get("title")
-                st.session_state.admin_edit_desc = pr.get("description")
-        with col3:
-            if st.button("Delete", key=f"delete-{project_id}"):
-                delete_project(project_id)
-                st.success("✅ Deleted successfully!")
+        if st.button("Submit Project"):
+            if uploaded and up_title and up_desc:
+                url = upload_media(uploaded)
+                file_type = uploaded.type.split("/")[0]
+                add_project(up_title, up_desc, url, file_type)
+                st.success("Project uploaded successfully!")
                 st.rerun()
 
-    # -------------------- ✏️ Edit Project --------------------
-    if st.session_state.admin_edit_id:
-        st.markdown('<h2 class="admin-heading">Edit Project</h2>', unsafe_allow_html=True)
-        new_title = st.text_input("Title", st.session_state.admin_edit_title, placeholder="Project / Site Name")
-        new_desc = st.text_area("Description", st.session_state.admin_edit_desc, placeholder="Project Description")
-        new_file = st.file_uploader("Replace Media (optional)", type=["jpg", "png", "mp4", "mov"])
+        # Manage Existing Projects
+        st.markdown('<h2 class="admin-heading">Manage Existing Projects</h2>', unsafe_allow_html=True)
+        projects = list_projects() or []
 
-        if st.button("Save Changes"):
-            file_url = None
-            file_type = None
-            if new_file:
-                file_url = upload_media(new_file)
-                file_type = new_file.type.split("/")[0]
-            update_project(st.session_state.admin_edit_id, new_title, new_desc, file_url, file_type)
-            st.success("✅ Updated successfully!")
-            st.session_state.admin_edit_id = None
-            st.rerun()
+        for pr in projects:
+            project_id = pr.get("id")
+            project_title = pr.get("title", "Untitled")
+            col1, col2, col3 = st.columns([0.7, 0.15, 0.15])
+            with col1:
+                st.markdown(f"<div class='project-item'><div class='title'><b>{project_title}</b></div></div>", unsafe_allow_html=True)
+            with col2:
+                if st.button("Edit", key=f"edit-{project_id}"):
+                    st.session_state.admin_edit_id = project_id
+                    st.session_state.admin_edit_title = pr.get("title")
+                    st.session_state.admin_edit_desc = pr.get("description")
+            with col3:
+                if st.button("Delete", key=f"delete-{project_id}"):
+                    delete_project(project_id)
+                    st.success("Deleted successfully!")
+                    st.rerun()
 
-else:
-    if password:
-        st.error("❌ Wrong password.")
-
+        # Edit Project Form
+        if st.session_state.admin_edit_id:
+            st.markdown('<h2 class="admin-heading">Edit Project</h2>', unsafe_allow_html=True)
+            new_title = st.text_input("Title", st.session_state.admin_edit_title, placeholder="Project / Site Name")
+            new_desc = st.text_area("Description", st.session_state.admin_edit_desc, placeholder="Project Description")
+            new_file = st.file_uploader("Replace Media (optional)", type=["jpg","png","mp4","mov"])
+            
+            if st.button("Save Changes"):
+                file_url = None
+                file_type = None
+                if new_file:
+                    file_url = upload_media(new_file)
+                    file_type = new_file.type.split("/")[0]
+                update_project(st.session_state.admin_edit_id, new_title, new_desc, file_url, file_type)
+                st.success("Updated!")
+                st.session_state.admin_edit_id = None
+                st.rerun()
+    else:
+        if password:
+            st.error("❌ Wrong password.")
+    
+    st.markdown("</div>", unsafe_allow_html=True)
