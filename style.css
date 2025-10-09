@@ -823,3 +823,80 @@ button[kind="secondary"]:hover,
   from { box-shadow: 0 0 10px rgba(212,175,55,0.3); }
   to { box-shadow: 0 0 25px rgba(212,175,55,0.6); }
 }
+/* 🌐 Responsive Fix for Mobiles & Tablets */
+@media screen and (max-width: 1024px) {
+  .top-header {
+    padding: 10px 20px;
+  }
+  .company-logo {
+    width: 60px;
+    height: 60px;
+  }
+  .company-name {
+    font-size: 1.6rem;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .top-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+  }
+
+  .company-logo {
+    width: 60px;
+    height: 60px;
+  }
+
+  .company-name {
+    font-size: 1.4rem;
+  }
+
+  /* Adjust container/card layouts */
+  .project-card, .gallery-container, .video-container {
+    width: 90% !important;
+    margin: auto !important;
+  }
+
+  /* Fix any side-by-side grids to stack vertically */
+  .row, .grid, .container, .horizontal-slide {
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  /* Text readability */
+  p, h2, h3, h4, h5 {
+    font-size: 0.95rem !important;
+  }
+
+  /* Padding adjustments */
+  section, .address-section, .about-us, .our-projects {
+    padding: 30px 15px !important;
+  }
+
+  /* Reduce excessive box-shadows/glows */
+  .company-logo {
+    box-shadow: 0 0 10px rgba(212,175,55,0.4);
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .company-name {
+    font-size: 1.2rem;
+  }
+
+  h2 {
+    font-size: 1.1rem !important;
+  }
+
+  p {
+    font-size: 0.9rem !important;
+    line-height: 1.4 !important;
+  }
+
+  .company-logo {
+    width: 50px;
+    height: 50px;
+  }
+}
