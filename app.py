@@ -228,7 +228,7 @@ if st.session_state.admin_visible:
         # -------------------- 📬 See Feedback Button --------------------
         st.markdown('<h2 class="admin-heading">📬 Feedback</h2>', unsafe_allow_html=True)
         st.markdown(f"""
-        <a href="{https://docs.google.com/forms/d/1fo-CUWQqrF5en3o9r6_5c4oOr9xqQeuKOAHMn8RWQB0/edit#responses}" target="_blank">
+        <a href="{FORM_URL}" target="_blank">
             <button style="background:#1e1e1e; color:var(--gold); padding:10px 20px; font-size:1rem; border:none; border-radius:8px; cursor:pointer;">
                 📄 See Feedback
             </button>
