@@ -166,7 +166,7 @@ for idx, proj in enumerate(projects):
 # -------------------- Address --------------------
 st.markdown("""
 <section class="fancy-section address-section">
-  <h1 class="section-title"> Address </h1>
+  <h1 class="section-title">⚜️</h1>
   <div class="address-card">
     <p><b>Er.</b>Rushikesh Shivarkar</p>
     <p><b>Address:</b> Lane No.1, Laxmi Colony, Pune – 411043</p>
