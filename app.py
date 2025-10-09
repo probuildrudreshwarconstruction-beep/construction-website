@@ -224,6 +224,19 @@ if st.session_state.admin_visible:
     if stored_password and password and hash_pass(password) == stored_password:
         st.success("Admin authenticated — upload/manage projects below.")
 
+    # -------------------- Admin: See Feedback Button --------------------
+    st.markdown('<h2 class="admin-heading">📬 Feedback</h2>', unsafe_allow_html=True)
+
+    feedback_url = FORM_URL  # or replace FORM_URL with your Google Sheet link if you want responses
+    feedback_button = st.markdown(f"""
+        <a href="{feedback_url}" target="_blank">
+            <button class="cta-button" style="background:#1e1e1e; color:var(--gold); padding:10px 20px; font-size:1rem; border:none; border-radius:8px; cursor:pointer;">
+                📄 See Feedback
+            </button>
+        </a>
+    """, unsafe_allow_html=True)
+
+
         # Change Password
         with st.expander("🔐 Change Admin Password"):
             old = st.text_input("Old Password", type="password", key="old_pass")
