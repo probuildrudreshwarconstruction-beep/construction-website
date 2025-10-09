@@ -1,9 +1,6 @@
 import streamlit as st
 from supabase_client import upload_media, add_project, list_projects, delete_project, update_project
-import os
-import base64
-import json
-import hashlib
+import os, base64, json, hashlib
 
 # -------------------- Password Config --------------------
 PASS_FILE = "admin_password.json"
@@ -12,22 +9,14 @@ def hash_pass(p):
     return hashlib.sha256(p.encode()).hexdigest()
 
 def get_password():
-    """
-    ✅ Checks for password in admin_password.json first.
-    ✅ Falls back to Streamlit secrets if not found.
-    ✅ Returns None if nothing exists (won't crash).
-    """
     if os.path.exists(PASS_FILE):
         with open(PASS_FILE, "r") as f:
-            data = json.load(f)
-            return data.get("password")
+            return json.load(f).get("password")
     elif "admin_password" in st.secrets:
         return hash_pass(st.secrets["admin_password"])
-    else:
-        return None
+    return None
 
 def set_password(new_pass):
-    """✅ Updates password file with new hash."""
     with open(PASS_FILE, "w") as f:
         json.dump({"password": hash_pass(new_pass)}, f)
 
@@ -39,7 +28,7 @@ def local_css(file_name):
 local_css("style.css")
 
 # -------------------- Page Config --------------------
-st.set_page_config(page_title="☬ProBuild Rudreshwar☬", layout="wide")
+st.set_page_config(page_title="☬ ProBuild Rudreshwar ☬", layout="wide")
 
 # -------------------- Session State --------------------
 if "admin_visible" not in st.session_state:
@@ -50,25 +39,19 @@ if "admin_edit_id" not in st.session_state:
 # -------------------- Secrets --------------------
 FORM_URL = st.secrets.get("GOOGLE_FORM_URL", "#")
 WHATSAPP = st.secrets.get("WHATSAPP_NUMBER", "")
+EMAIL = st.secrets.get("EMAIL", "mailto:probuilder@example.com")
+INSTA = st.secrets.get("INSTAGRAM_URL", "https://instagram.com/")
 wa_link = f"https://wa.me/{WHATSAPP}" if WHATSAPP else "#"
 
-# -------------------- Hero Section --------------------
-
-hero_image_path = "assets/b1.jpg"
-
-if os.path.exists(hero_image_path):
-    with open(hero_image_path, "rb") as f:
-        img_b64 = base64.b64encode(f.read()).decode()
-
-    wa_link = "https://wa.me/919999999999"  # 🔸 Replace with your actual WhatsApp link
-
-    st.markdown(f"""
-    <header class="hero w3-display-container">
-        <img src="data:image/jpg;base64,{img_b64}" class="hero-img">
-
-    </header>
-    """, unsafe_allow_html=True)
-
+# -------------------- Header (Logo + Name) --------------------
+st.markdown("""
+<header class="top-header">
+  <div class="header-left">
+    <img src="assets/logo.png" class="company-logo" alt="Logo">
+    <h1 class="company-name">ProBuild Rudreshwar Constructions</h1>
+  </div>
+</header>
+""", unsafe_allow_html=True)
 
 # -------------------- About Us --------------------
 st.markdown("""
@@ -76,7 +59,7 @@ st.markdown("""
   <h1 class="section-title">☬ All About Us ☬</h1>
   <div class="fancy-content">
     <div class="left">
-      <p>ProBuild Rudreshwar Construction & Developers is led by Er. Rushikesh Shivarkar, B.E. Civil — Govt. Contractor & Vastu Expert.</p>
+      <p>ProBuild Rudreshwar Construction & Developers is led by <b>Er. Rushikesh Shivarkar</b>, B.E. Civil — Govt. Contractor & Vastu Expert.</p>
       <ul>
         <li>Trusted Construction Solutions since 2015</li>
         <li>Residential & Industrial Projects</li>
@@ -122,7 +105,7 @@ st.markdown("""
 </section>
 """, unsafe_allow_html=True)
 
-# -------------------- Our Projects Section --------------------
+# -------------------- Our Projects --------------------
 st.markdown("""
 <section class="fancy-section" id="projects">
   <h1 class="section-title">☬ Our Projects ☬</h1>
@@ -137,9 +120,9 @@ except Exception as e:
 
 if not projects:
     projects = [
-        {"title":"Luxury Villa","description":"Modern villa with eco-friendly materials.","file_url":"https://www.w3schools.com/w3images/fjords.jpg","file_type":"image"},
-        {"title":"Commercial Renovation","description":"Revamped commercial complex.","file_url":"https://www.w3schools.com/w3images/lights.jpg","file_type":"image"},
-        {"title":"Interior Design","description":"Elegant interior design.","file_url":"https://www.w3schools.com/w3images/mountains.jpg","file_type":"image"}
+        {"title": "Luxury Villa", "description": "Modern villa with eco-friendly materials.", "file_url": "https://www.w3schools.com/w3images/fjords.jpg", "file_type": "image"},
+        {"title": "Commercial Renovation", "description": "Revamped commercial complex.", "file_url": "https://www.w3schools.com/w3images/lights.jpg", "file_type": "image"},
+        {"title": "Interior Design", "description": "Elegant interior design.", "file_url": "https://www.w3schools.com/w3images/mountains.jpg", "file_type": "image"}
     ]
 
 cols = st.columns(3)
@@ -150,7 +133,6 @@ for idx, proj in enumerate(projects):
         file_type = (proj.get("file_type") or "").lower()
         title = proj.get("title", "Untitled")
         desc = proj.get("description", "")
-
         st.markdown(f"""
         <div class="project-container" onclick="document.getElementById('modal-{idx}').style.display='block'">
           {'<video src="'+file_url+'" autoplay muted loop playsinline></video>' if file_type in ('video','mp4','mov') else '<img src="'+file_url+'">'}
@@ -162,43 +144,62 @@ for idx, proj in enumerate(projects):
           {'<video src="'+file_url+'" controls autoplay style="width:100%; max-height:80vh;"></video>' if file_type in ('video','mp4','mov') else '<img class="modal-content" src="'+file_url+'">'}
         </div>
         """, unsafe_allow_html=True)
-
         with st.expander("View More"):
-             formatted_desc = "".join([f"<li>{line.strip()}</li>" for line in desc.split("\n") if line.strip()])
-             st.markdown(f"<ul class='viewmore-list'>{formatted_desc}</ul>", unsafe_allow_html=True)
+            formatted_desc = "".join([f"<li>{line.strip()}</li>" for line in desc.split("\n") if line.strip()])
+            st.markdown(f"<ul class='viewmore-list'>{formatted_desc}</ul>", unsafe_allow_html=True)
 
-# -------------------- Marathi CTA --------------------
+# -------------------- Address Section --------------------
+st.markdown("""
+<section class="fancy-section address-section">
+  <h1 class="section-title">☬ Address ☬</h1>
+  <div class="address-card">
+    <p><b>Owner:</b> Er. Rushikesh Shivarkar</p>
+    <p><b>Address:</b> Lane No.1, Laxmi Colony, Pune – 411043</p>
+    <p><b>Contact:</b> +91 7745065820</p>
+  </div>
+</section>
+""", unsafe_allow_html=True)
+
+# -------------------- Contact Us (Former Marathi CTA) --------------------
 st.markdown(f"""
 <section class="fancy-section" id="cta">
-  <h1 class="section-title">तर मग काय वाट बघता? संपर्क करा! 🚀</h1>
+  <h1 class="section-title">☬ Contact Us ☬</h1>
   <div class="fancy-content">
     <div class="left">
-      <div class="fancy-bullet-wrapper">
-        <span class="fancy-bullet"></span>
-        <a href="{FORM_URL}" target="_blank">
-          <button class="cta-button" style="background:var(--gold); color:#000;">
-            📄 Enquire via Forms
-          </button>
-        </a>
-      </div>
+      <a href="{FORM_URL}" target="_blank">
+        <button class="cta-button" style="background:var(--gold); color:#000;">
+          📄 Enquire via Google Form
+        </button>
+      </a>
     </div>
-    <div class="divider"></div>
     <div class="right">
-      <div class="fancy-bullet-wrapper">
-        <span class="fancy-bullet"></span>
-        <a href="{wa_link}" target="_blank">
-          <button class="cta-button" style="background:var(--bronze); color:#fff;">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" 
-                 style="height:22px; vertical-align:middle; margin-right:8px;">
-            Contact on WhatsApp
-          </button>
-        </a>
-      </div>
+      <a href="{wa_link}" target="_blank">
+        <button class="cta-button" style="background:var(--bronze); color:#fff;">
+          💬 WhatsApp
+        </button>
+      </a>
+    </div>
+  </div>
+  <div class="fancy-content" style="margin-top:40px;">
+    <div class="left">
+      <a href="{EMAIL}" target="_blank">
+        <button class="cta-button" style="background:#1e1e1e; color:var(--gold);">
+          ✉️ Email Us
+        </button>
+      </a>
+    </div>
+    <div class="right">
+      <a href="{INSTA}" target="_blank">
+        <button class="cta-button" style="background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af,#515bd4); color:white;">
+          📸 Instagram
+        </button>
+      </a>
     </div>
   </div>
   <p style="text-align:center; margin-top:12px; font-size:0.9rem; opacity:0.8;">© 2025 ProBuild Rudreshwar Constructions</p>
 </section>
 """, unsafe_allow_html=True)
+
 
 # -------------------- Admin Panel --------------------
 st.markdown("<hr><h2></h2><hr>", unsafe_allow_html=True)
