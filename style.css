@@ -285,7 +285,7 @@ footer a:hover {
 
 #cta .section-title {
   font-family: "Cinzel", serif;
-  font-size: 3rem;
+  font-size: 1.5rem;
   background: linear-gradient(90deg, #d4af37, #fff8e7, #d4af37);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -814,7 +814,7 @@ button[kind="secondary"]:hover,
 
 .company-name {
   font-family: "Cinzel", serif;
-  font-size: 2rem;
+  font-size: 0.5rem;
   color: var(--gold);
   text-shadow: 0 0 10px rgba(212,175,55,0.5);
 }
