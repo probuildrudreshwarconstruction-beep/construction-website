@@ -20,6 +20,12 @@ def set_password(new_pass):
     with open(PASS_FILE, "w") as f:
         json.dump({"password": hash_pass(new_pass)}, f)
 
+# -------------------- Base64 Image Helper --------------------
+def get_base64_image(image_path):
+    """Convert image to Base64 so Streamlit can display it inside HTML."""
+    with open(image_path, "rb") as img_file:
+        return base64.b64encode(img_file.read()).decode()
+
 # -------------------- Load external CSS --------------------
 def local_css(file_name):
     with open(file_name) as f:
@@ -44,10 +50,12 @@ INSTA = st.secrets.get("INSTAGRAM_URL", "https://instagram.com/")
 wa_link = f"https://wa.me/{WHATSAPP}" if WHATSAPP else "#"
 
 # -------------------- Header (Logo + Name) --------------------
-st.markdown("""
+logo_base64 = get_base64_image("assets/logo.png")
+
+st.markdown(f"""
 <header class="top-header">
   <div class="header-left">
-    <img src="assets/logo.png" class="company-logo" alt="Logo">
+    <img src="data:image/png;base64,{logo_base64}" class="company-logo" alt="Logo">
     <h1 class="company-name">ProBuild Rudreshwar Constructions</h1>
   </div>
 </header>
