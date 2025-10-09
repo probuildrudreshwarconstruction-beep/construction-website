@@ -106,11 +106,8 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # -------------------- Our Projects --------------------
-st.markdown("""
-<h1 style="text-align:center; font-size:2.2rem; margin-top:30px; margin-bottom:20px; font-weight:700;">
-  Our Projects
-</h1>
-""", unsafe_allow_html=True)
+st.markdown('<h1 class="section-title">Our Projects</h1>', unsafe_allow_html=True)
+
 
 
 try:
