@@ -138,6 +138,7 @@ for idx, proj in enumerate(projects):
         file_url = proj.get("file_url","")
         file_type = (proj.get("file_type") or "").lower()
 
+        # Video/Image container with gold border and poster fallback
         container_html = f"""
         <div style="
             width:100%;
@@ -151,9 +152,24 @@ for idx, proj in enumerate(projects):
             align-items:center;
             background-color:#000;
             overflow:hidden;
+            position:relative;
         ">
-            {f'<video src="{file_url}" controls style="width:100%; height:100%; object-fit:contain;"></video>' 
-              if file_type in ("video","mp4","mov") else f'<img src="{file_url}" style="width:100%; height:100%; object-fit:contain;">'}
+            {f'''
+<video id="vid-{idx}" src="{file_url}" controls style="width:100%; height:100%; object-fit:contain;" playsinline></video>
+<script>
+const vid = document.getElementById("vid-{idx}");
+vid.addEventListener('loadeddata', () => {{
+    if(!vid.hasAttribute('poster')) {{
+        const canvas = document.createElement('canvas');
+        canvas.width = vid.videoWidth;
+        canvas.height = vid.videoHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(vid, 0, 0, canvas.width, canvas.height);
+        vid.setAttribute('poster', canvas.toDataURL('image/jpeg'));
+    }}
+}});
+</script>
+''' if file_type in ("video","mp4","mov") else f'<img src="{file_url}" style="width:100%; height:100%; object-fit:contain;">'}
         </div>
         <div style="text-align:center; font-weight:bold; margin-top:4px;">{title}</div>
         """
