@@ -168,7 +168,7 @@ st.markdown("""
 <section class="fancy-section address-section">
   <h1 class="section-title"> Address </h1>
   <div class="address-card">
-    <p><b>Owner:</b> Er. Rushikesh Shivarkar</p>
+    <p><b>Er.</b>Rushikesh Shivarkar</p>
     <p><b>Address:</b> Lane No.1, Laxmi Colony, Pune – 411043</p>
     <p><b>Contact:</b> +91 7745065820</p>
   </div>
