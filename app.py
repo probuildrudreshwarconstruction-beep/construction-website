@@ -61,7 +61,12 @@ WHATSAPP = st.secrets.get("WHATSAPP_NUMBER", "")
 EMAIL = st.secrets.get("EMAIL", "mailto:probuilder@example.com")
 INSTA = st.secrets.get("INSTAGRAM_URL", "https://instagram.com/")
 RESPONSES_LINK = st.secrets.get("RESPONSES_LINK", "#")
-wa_link = f"https://wa.me/{WHATSAPP}" if WHATSAPP else "#"
+if WHATSAPP:
+    clean_whatsapp = WHATSAPP.replace("+", "").replace(" ", "")
+    wa_link = f"https://wa.me/{clean_whatsapp}"
+else:
+    wa_link = "#"
+
 
 # -------------------- Header (Logo + Name) --------------------
 logo_base64 = get_base64_image("assets/logo.png")
