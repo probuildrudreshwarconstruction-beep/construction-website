@@ -3,7 +3,6 @@ from supabase_client import upload_media, add_project, list_projects, delete_pro
 import os, base64, json, hashlib, random, string
 
 # -------------------- Safari Cache Bust Fix --------------------
-# Force Streamlit to bypass Safari caching issues
 cache_bust = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
 st.experimental_set_query_params(_cb=cache_bust)
 
@@ -200,6 +199,6 @@ st.markdown(f"""
       </a>
     </div>
   </div>
-  <p style="text-align:center; margin-top:12px; font-size:0.9rem; opacity:0.7;">© ProBuild Rudreshwar Constructions 2025</p>
+  <p style="text-align:center; margin-top:12px; font-size:0.7rem;">© ProBuild Rudreshwar Constructions 2025</p>
 </section>
 """, unsafe_allow_html=True)
