@@ -95,11 +95,6 @@ st.markdown("""
         <li>Architectural Drawing & Design</li>
         <li>Structural Steel Designing</li>
         <li>3D Bungalow / Building Designing</li>
-      </ul>
-    </div>
-    <div class="divider"></div>
-    <div class="right">
-      <ul>
         <li>Interior Design — Lock & Key Projects</li>
         <li>Estimation, Costing & Property Evaluation</li>
         <li>Pre-Engineering Buildings</li>
