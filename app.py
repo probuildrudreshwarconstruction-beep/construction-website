@@ -1,7 +1,7 @@
 import streamlit as st
 from supabase_client import upload_media, add_project, list_projects, delete_project, update_project
 import os, base64, json, hashlib
-
+import streamlit.components.v1 as components
 # -------------------- Password Config --------------------
 PASS_FILE = "admin_password.json"
 
@@ -35,56 +35,52 @@ def local_css(file_name):
         st.warning(f"CSS file '{file_name}' not found.")
 
 local_css("style.css")  # Load your style.css directly
-# -------------------- Hide Streamlit Default UI Elements --------------------
+
+
+import streamlit as st
+import streamlit.components.v1 as components
+
+# -------------------- Hide Streamlit UI Elements --------------------
 st.markdown("""
 <style>
-/* 🧼 Remove top Streamlit bar */
+/* Remove top Streamlit bar */
 header[data-testid="stHeader"] {
     display: none !important;
 }
-
-/* 🧼 Hide main menu and footer */
 #MainMenu, footer {
     visibility: hidden !important;
 }
-
-/* 🧼 Remove top space caused by Streamlit container */
 main.block-container {
     padding-top: 0rem !important;
     margin-top: -4rem !important;
 }
-
 section[data-testid="stAppViewBlockContainer"] {
     padding-top: 0rem !important;
     margin-top: -3rem !important;
 }
-
-/* 🛑 Hide floating GitHub and Hosted badge (multiple fallbacks) */
-div[data-testid="stStatusWidget"],
-div[data-testid="stDecoration"],
-div[data-testid="stAppStatusWidget"],
-div[data-testid="stToolbar"],
-div[aria-label="View source"],
-div[aria-label="Fork this app"],
-a[href*="github.com"],
-button[title="View source"],
-button[title="Fork this app"] {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-}
-
-/* 🧼 Final catch-all */
-.stDecoration, .stAppStatusWidget, .stStatusWidget, [data-testid="stActionButtonIcon"] {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-}
 </style>
 """, unsafe_allow_html=True)
 
+# 🧨 JavaScript injection to remove GitHub + Hosted badge
+components.html("""
+<script>
+setInterval(() => {
+  // remove GitHub corner button
+  const github = document.querySelector('a[href*="github.com"]');
+  if (github) github.remove();
+
+  // remove Hosted with Streamlit badge
+  const badge = document.querySelector('div[data-testid="stStatusWidget"]') ||
+                document.querySelector('div[aria-label="Hosted with Streamlit"]') ||
+                document.querySelector('div[class*="status"]');
+  if (badge) badge.remove();
+
+  // remove toolbar decorations
+  const decorations = document.querySelectorAll('[data-testid="stDecoration"], [data-testid="stToolbar"], .stDecoration');
+  decorations.forEach(el => el.remove());
+}, 500);
+</script>
+""", height=0)
 
 # -------------------- Page Config --------------------
 st.set_page_config(page_title=" ProBuild Rudreshwar ", layout="wide")
