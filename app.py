@@ -1,6 +1,7 @@
 import streamlit as st
 from supabase_client import upload_media, add_project, list_projects, delete_project, update_project
 import os, base64, json, hashlib
+
 # -------------------- Password Config --------------------
 PASS_FILE = "admin_password.json"
 
@@ -34,11 +35,6 @@ def local_css(file_name):
         st.warning(f"CSS file '{file_name}' not found.")
 
 local_css("style.css")  # Load your style.css directly
-
-
-import streamlit as st
-import streamlit.components.v1 as components
-
 # -------------------- Hide Streamlit Default Header & Footer --------------------
 st.markdown("""
 <style>
@@ -48,20 +44,8 @@ footer {visibility: hidden;}
 main.block-container {padding-top: 0rem;}
 </style>
 """, unsafe_allow_html=True)
-
 # -------------------- Page Config --------------------
 st.set_page_config(page_title=" ProBuild Rudreshwar ", layout="wide")
-
-
-# -------------------- Load external CSS --------------------
-def local_css(file_name):
-    if os.path.exists(file_name):
-        with open(file_name) as f:
-            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-    else:
-        st.warning(f"CSS file '{file_name}' not found.")
-
-local_css("style.css")  # Load your style.css directly
 
 # -------------------- Session State --------------------
 if "admin_visible" not in st.session_state:
@@ -72,7 +56,7 @@ if "admin_edit_id" not in st.session_state:
 # -------------------- Secrets --------------------
 FORM_URL = st.secrets.get("GOOGLE_FORM_URL", "#")
 WHATSAPP = st.secrets.get("WHATSAPP_NUMBER", "")
-EMAIL = st.secrets.get("EMAIL", "mailto:probuildrudreshwarconstruction@gmail.com")
+EMAIL = st.secrets.get("EMAIL", "mailto:probuilder@example.com")
 INSTA = st.secrets.get("INSTAGRAM_URL", "https://instagram.com/")
 wa_link = f"https://wa.me/{WHATSAPP}" if WHATSAPP else "#"
 
@@ -225,7 +209,21 @@ st.markdown(f"""
 </section>
 """, unsafe_allow_html=True)
 
-# -------------------- 📬 Admin: See Feedback Section --------------------
+# -------------------- Admin Panel --------------------
+st.markdown("<hr><h2></h2><hr>", unsafe_allow_html=True)
+
+if st.button("🔒"):
+    st.session_state.admin_visible = not st.session_state.admin_visible
+
+if st.session_state.admin_visible:
+    st.markdown('<div class="admin-panel">', unsafe_allow_html=True)
+
+    password = st.text_input("⚜️", type="password", key="admin_pw", placeholder="Enter admin password")
+    stored_password = get_password()
+
+    if stored_password and password and hash_pass(password) == stored_password:
+        st.success("Admin authenticated — upload/manage projects below.")
+
         # Change Password
         with st.expander("🔐 Change Admin Password"):
             old = st.text_input("Old Password", type="password", key="old_pass")
