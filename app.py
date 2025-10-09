@@ -138,6 +138,7 @@ for idx, proj in enumerate(projects):
         file_url = proj.get("file_url","")
         file_type = (proj.get("file_type") or "").lower()
 
+        # -------------------- Updated Container --------------------
         container_html = f"""
         <div style="
             width:100%;
@@ -152,8 +153,14 @@ for idx, proj in enumerate(projects):
             background-color:#000;
             overflow:hidden;
         ">
-            {f'<video src="{file_url}" controls style="width:100%; height:100%; object-fit:contain;"></video>' 
-              if file_type in ("video","mp4","mov") else f'<img src="{file_url}" style="width:100%; height:100%; object-fit:contain;">'}
+            {f'''
+            <video 
+                src="{file_url}" 
+                controls 
+                style="width:100%; height:100%; object-fit:contain;" 
+                poster="{file_url}#t=0.001"
+            ></video>
+            ''' if file_type in ("video","mp4","mov") else f'<img src="{file_url}" style="width:100%; height:100%; object-fit:contain;">'}
         </div>
         <div style="text-align:center; font-weight:bold; margin-top:4px;">{title}</div>
         """
