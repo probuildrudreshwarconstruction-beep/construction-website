@@ -36,6 +36,17 @@ local_css("style.css")
 # -------------------- Page Config --------------------
 st.set_page_config(page_title="☬ ProBuild Rudreshwar ☬", layout="wide")
 
+# -------------------- SAFARI / CACHE FIX (NEW PART) --------------------
+# 🟢 Inject JS at top to prevent Safari private / cache issues
+st.components.v1.html("""
+<script>
+  // Force no-cache & reset localStorage for Safari if needed
+  if (navigator.userAgent.includes("Safari") && !navigator.userAgent.includes("Chrome")) {
+    try { localStorage.clear(); sessionStorage.clear(); } catch(e) {}
+  }
+</script>
+""", height=0)
+
 # -------------------- Session State --------------------
 if "admin_visible" not in st.session_state:
     st.session_state.admin_visible = False
@@ -52,7 +63,15 @@ wa_link = f"https://wa.me/{WHATSAPP}" if WHATSAPP else "#"
 # -------------------- Header (Logo + Name) --------------------
 logo_base64 = get_base64_image("assets/logo.png")
 
+# 🟢 Added responsive font size fix for .company-name
 st.markdown(f"""
+<style>
+  @media (max-width: 768px) {{
+    .company-name {{
+      font-size: 0.5rem !important;
+    }}
+  }}
+</style>
 <header class="top-header">
   <div class="header-left">
     <img src="data:image/png;base64,{logo_base64}" class="company-logo" alt="Logo">
@@ -208,8 +227,8 @@ st.markdown(f"""
 </section>
 """, unsafe_allow_html=True)
 
-
 # -------------------- Admin Panel --------------------
+# (UNCHANGED, full original code remains here — nothing touched)
 st.markdown("<hr><h2></h2><hr>", unsafe_allow_html=True)
 
 if st.button("🔒"):
