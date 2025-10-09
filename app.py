@@ -35,26 +35,34 @@ def local_css(file_name):
         st.warning(f"CSS file '{file_name}' not found.")
 
 local_css("style.css")  # Load your style.css directly
-# -------------------- Hide Streamlit Default Header & Footer --------------------
+# -------------------- Hide Streamlit Default Header & Footer + Remove Blank Space --------------------
 st.markdown("""
 <style>
-/* Remove Streamlit top black header (Fork, GitHub, Menu) */
+/* Remove Streamlit default top bar */
 header[data-testid="stHeader"] {
     display: none !important;
 }
 
-/* Remove Streamlit hamburger main menu */
+/* Hide the hamburger menu */
 #MainMenu {visibility: hidden;}
 
-/* Remove footer text "Made with Streamlit" */
+/* Hide footer */
 footer {visibility: hidden;}
 
-/* Optional: remove empty top padding so content shifts up */
+/* Remove default Streamlit top padding/margin */
 main.block-container {
-    padding-top: 0rem;
+    padding-top: 0rem !important;
+    margin-top: -3rem !important;  /* 👈 This line pulls everything up */
+}
+
+/* Optional: If still some space remains due to header container */
+section[data-testid="stAppViewBlockContainer"] {
+    padding-top: 0rem !important;
+    margin-top: -2rem !important;
 }
 </style>
 """, unsafe_allow_html=True)
+
 
 # -------------------- Page Config --------------------
 st.set_page_config(page_title=" ProBuild Rudreshwar ", layout="wide")
