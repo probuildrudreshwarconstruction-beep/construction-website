@@ -86,8 +86,7 @@ st.markdown("""
         <li>Modern Design with Structural Integrity</li>
         <li>Timely Delivery & Cost-effective Solutions</li>
 
-      </ul>
-    </div>
+      
   </div>
 </section>
 """, unsafe_allow_html=True)
