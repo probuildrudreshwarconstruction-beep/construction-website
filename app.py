@@ -28,10 +28,13 @@ def get_base64_image(image_path):
 
 # -------------------- Load external CSS --------------------
 def local_css(file_name):
-    with open(file_name) as f:
-        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+    if os.path.exists(file_name):
+        with open(file_name) as f:
+            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+    else:
+        st.warning(f"CSS file '{file_name}' not found.")
 
-local_css("style.css")
+local_css("style.css")  # Load your style.css directly
 
 # -------------------- Page Config --------------------
 st.set_page_config(page_title="☬ ProBuild Rudreshwar ☬", layout="wide")
@@ -168,7 +171,7 @@ st.markdown("""
 </section>
 """, unsafe_allow_html=True)
 
-# -------------------- Contact Us (Former Marathi CTA) --------------------
+# -------------------- Contact Us (CTA) --------------------
 st.markdown(f"""
 <section class="fancy-section" id="cta">
   <h1 class="section-title">☬ Contact Us ☬</h1>
@@ -208,7 +211,6 @@ st.markdown(f"""
 </section>
 """, unsafe_allow_html=True)
 
-
 # -------------------- Admin Panel --------------------
 st.markdown("<hr><h2></h2><hr>", unsafe_allow_html=True)
 
@@ -218,14 +220,13 @@ if st.button("🔒"):
 if st.session_state.admin_visible:
     st.markdown('<div class="admin-panel">', unsafe_allow_html=True)
 
-    # 🔐 Admin Login
     password = st.text_input("⚜️", type="password", key="admin_pw", placeholder="Enter admin password")
     stored_password = get_password()
 
     if stored_password and password and hash_pass(password) == stored_password:
         st.success("Admin authenticated — upload/manage projects below.")
 
-        # 🔑 ===== Change Password Section =====
+        # Change Password
         with st.expander("🔐 Change Admin Password"):
             old = st.text_input("Old Password", type="password", key="old_pass")
             new = st.text_input("New Password", type="password", key="new_pass")
@@ -244,7 +245,7 @@ if st.session_state.admin_visible:
                     st.success("✅ Password changed successfully! It will apply on next login.")
                     st.rerun()
 
-        # ===== Upload New Project =====
+        # Upload New Project
         st.markdown('<h2 class="admin-heading">Upload New Project</h2>', unsafe_allow_html=True)
         uploaded = st.file_uploader("Upload media (image/video)", type=["jpg","png","mp4","mov"], key="upload_file")
         up_title = st.text_input("⚜️", key="upload_title", placeholder="Enter Project / Site Name")
@@ -258,20 +259,16 @@ if st.session_state.admin_visible:
                 st.success("Project uploaded successfully!")
                 st.rerun()
 
-        # ===== Manage Existing Projects =====
+        # Manage Existing Projects
         st.markdown('<h2 class="admin-heading">Manage Existing Projects</h2>', unsafe_allow_html=True)
         projects = list_projects() or []
 
         for pr in projects:
             project_id = pr.get("id")
             project_title = pr.get("title", "Untitled")
-
             col1, col2, col3 = st.columns([0.7, 0.15, 0.15])
             with col1:
-                st.markdown(
-                    f"<div class='project-item'><div class='title'><b>{project_title}</b></div></div>",
-                    unsafe_allow_html=True,
-                )
+                st.markdown(f"<div class='project-item'><div class='title'><b>{project_title}</b></div></div>", unsafe_allow_html=True)
             with col2:
                 if st.button("Edit", key=f"edit-{project_id}"):
                     st.session_state.admin_edit_id = project_id
@@ -283,7 +280,7 @@ if st.session_state.admin_visible:
                     st.success("Deleted successfully!")
                     st.rerun()
 
-        # ===== Edit Project Form =====
+        # Edit Project Form
         if st.session_state.admin_edit_id:
             st.markdown('<h2 class="admin-heading">Edit Project</h2>', unsafe_allow_html=True)
             new_title = st.text_input("Title", st.session_state.admin_edit_title, placeholder="Project / Site Name")
@@ -300,7 +297,6 @@ if st.session_state.admin_visible:
                 st.success("Updated!")
                 st.session_state.admin_edit_id = None
                 st.rerun()
-
     else:
         if password:
             st.error("❌ Wrong password.")
