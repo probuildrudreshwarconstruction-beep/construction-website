@@ -22,19 +22,7 @@ h1, h2, h3, h4, h5, h6, .hero-title, .section-title {
   color: var(--gold) !important;
   text-shadow: 0 0 10px rgba(212,175,55,0.4);
 }
-/* Fixed Header */
-.top-header {
-    position: sticky;
-    top: 0;
-    z-index: 9999;
-    background-color: var(--bg);
-    padding: 8px 10px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 15px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
+
 
 /* ===== Hero Section ===== */
 .hero {
@@ -826,7 +814,7 @@ button[kind="secondary"]:hover,
 
 .company-name {
   font-family: "Cinzel", serif;
-  font-size: 2rem;
+  font-size: 1.5rem;
   color: var(--gold);
   text-shadow: 0 0 10px rgba(212,175,55,0.6);
 }
@@ -835,58 +823,4 @@ button[kind="secondary"]:hover,
 @keyframes glowPulse {
   from { box-shadow: 0 0 10px rgba(212,175,55,0.3); }
   to { box-shadow: 0 0 25px rgba(212,175,55,0.6); }
-}
-/* 🌐 Mobile & Tablet Adjustments */
-@media screen and (max-width: 768px) {
-  
-  /* Fix header to top and make company name smaller */
-  .top-header {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 999;
-    padding: 8px 10px; /* reduce padding for smaller screens */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .company-logo {
-    max-width: 120px; /* smaller logo */
-    height: auto;
-    margin-bottom: 5px;
-  }
-
-  .company-name {
-    font-size: 1.2rem; /* smaller font */
-    text-align: center;
-    white-space: nowrap; /* keep on single line */
-  }
-
-  /* Adjust About/Services/Projects headings */
-  .section-title {
-    font-size: 1.4rem; /* smaller headings for mobile */
-  }
-
-  /* Adjust CTA / Contact buttons */
-  .cta-button {
-    font-size: 0.9rem; /* smaller buttons */
-    padding: 8px 12px;
-  }
-
-  /* Project containers */
-  .project-container {
-    width: 100% !important; /* full width for mobile */
-    margin-bottom: 15px;
-  }
-
-  /* Modal images/videos */
-  .modal-content, video {
-    max-height: 60vh; /* reduce size to fit screen */
-  }
-  
-  /* Address section */
-  .address-card p {
-    font-size: 0.85rem;
-  }
 }
