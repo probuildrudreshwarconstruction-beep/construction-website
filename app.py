@@ -144,9 +144,25 @@ for idx, proj in enumerate(projects):
         file_type = (proj.get("file_type") or "").lower()
         title = proj.get("title", "Untitled")
         desc = proj.get("description", "")
+
+        # 🟢 CHANGE HERE — video now shows a thumbnail with play button
+        if file_type in ('video', 'mp4', 'mov'):
+            media_html = f"""
+            <div class="video-thumb" onclick="document.getElementById('modal-{idx}').style.display='block'">
+              <video src="{file_url}" muted preload="metadata"></video>
+              <div class="play-button">▶</div>
+            </div>
+            """
+        else:
+            media_html = f"""
+            <div class="image-thumb" onclick="document.getElementById('modal-{idx}').style.display='block'">
+              <img src="{file_url}">
+            </div>
+            """
+
         st.markdown(f"""
-        <div class="project-container" onclick="document.getElementById('modal-{idx}').style.display='block'">
-          {'<video src="'+file_url+'" autoplay muted loop playsinline></video>' if file_type in ('video','mp4','mov') else '<img src="'+file_url+'">'}
+        <div class="project-container">
+          {media_html}
           <div class="project-overlay">{title}</div>
         </div>
 
@@ -155,6 +171,7 @@ for idx, proj in enumerate(projects):
           {'<video src="'+file_url+'" controls autoplay style="width:100%; max-height:80vh;"></video>' if file_type in ('video','mp4','mov') else '<img class="modal-content" src="'+file_url+'">'}
         </div>
         """, unsafe_allow_html=True)
+
         with st.expander("View More"):
             formatted_desc = "".join([f"<li>{line.strip()}</li>" for line in desc.split("\n") if line.strip()])
             st.markdown(f"<ul class='viewmore-list'>{formatted_desc}</ul>", unsafe_allow_html=True)
@@ -210,6 +227,7 @@ st.markdown(f"""
   <p style="text-align:center; margin-top:12px; font-size:0.9rem; opacity:0.8;">© 2025 ProBuild Rudreshwar Constructions</p>
 </section>
 """, unsafe_allow_html=True)
+
 
 # -------------------- Admin Panel --------------------
 st.markdown("<hr><h2></h2><hr>", unsafe_allow_html=True)
