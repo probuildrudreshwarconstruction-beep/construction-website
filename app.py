@@ -35,6 +35,7 @@ def local_css(file_name):
         st.warning(f"CSS file '{file_name}' not found.")
 
 local_css("style.css")  # Load your style.css directly
+
 # -------------------- Hide Streamlit Default Header & Footer --------------------
 st.markdown("""
 <style>
@@ -44,6 +45,7 @@ footer {visibility: hidden;}
 main.block-container {padding-top: 0rem;}
 </style>
 """, unsafe_allow_html=True)
+
 # -------------------- Page Config --------------------
 st.set_page_config(page_title=" ProBuild Rudreshwar ", layout="wide")
 
@@ -119,7 +121,6 @@ st.markdown("""
   Our Projects
 </h1>
 """, unsafe_allow_html=True)
-
 
 try:
     projects = list_projects() or []
@@ -224,7 +225,17 @@ if st.session_state.admin_visible:
     if stored_password and password and hash_pass(password) == stored_password:
         st.success("Admin authenticated — upload/manage projects below.")
 
-        # Change Password
+        # -------------------- 📬 See Feedback Button --------------------
+        st.markdown('<h2 class="admin-heading">📬 Feedback</h2>', unsafe_allow_html=True)
+        st.markdown(f"""
+        <a href="{FORM_URL}" target="_blank">
+            <button style="background:#1e1e1e; color:var(--gold); padding:10px 20px; font-size:1rem; border:none; border-radius:8px; cursor:pointer;">
+                📄 See Feedback
+            </button>
+        </a>
+        """, unsafe_allow_html=True)
+
+        # -------------------- Change Password --------------------
         with st.expander("🔐 Change Admin Password"):
             old = st.text_input("Old Password", type="password", key="old_pass")
             new = st.text_input("New Password", type="password", key="new_pass")
@@ -243,7 +254,7 @@ if st.session_state.admin_visible:
                     st.success("✅ Password changed successfully! It will apply on next login.")
                     st.rerun()
 
-        # Upload New Project
+        # -------------------- Upload New Project --------------------
         st.markdown('<h2 class="admin-heading">Upload New Project</h2>', unsafe_allow_html=True)
         uploaded = st.file_uploader("Upload media (image/video)", type=["jpg","png","mp4","mov"], key="upload_file")
         up_title = st.text_input("⚜️", key="upload_title", placeholder="Enter Project / Site Name")
@@ -257,7 +268,7 @@ if st.session_state.admin_visible:
                 st.success("Project uploaded successfully!")
                 st.rerun()
 
-        # Manage Existing Projects
+        # -------------------- Manage Existing Projects --------------------
         st.markdown('<h2 class="admin-heading">Manage Existing Projects</h2>', unsafe_allow_html=True)
         projects = list_projects() or []
 
@@ -278,7 +289,7 @@ if st.session_state.admin_visible:
                     st.success("Deleted successfully!")
                     st.rerun()
 
-        # Edit Project Form
+        # -------------------- Edit Project Form --------------------
         if st.session_state.admin_edit_id:
             st.markdown('<h2 class="admin-heading">Edit Project</h2>', unsafe_allow_html=True)
             new_title = st.text_input("Title", st.session_state.admin_edit_title, placeholder="Project / Site Name")
