@@ -107,10 +107,11 @@ st.markdown("""
 
 # -------------------- Our Projects --------------------
 st.markdown("""
-<section class="fancy-section" id="projects">
-  <h1 class="section-title">Our Projects</h1>
-</section>
+<h1 style="text-align:center; font-size:2.2rem; margin-top:30px; margin-bottom:20px; font-weight:700;">
+  Our Projects
+</h1>
 """, unsafe_allow_html=True)
+
 
 try:
     projects = list_projects() or []
