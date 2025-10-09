@@ -60,6 +60,21 @@ section[data-testid="stAppViewBlockContainer"] {
     padding-top: 0rem !important;
     margin-top: -2rem !important;
 }
+
+/* 🛑 Hide the floating GitHub circle button */
+a[data-testid="stActionButtonIcon"] {
+    display: none !important;
+}
+
+/* 🛑 Hide the "Hosted with Streamlit" red crown badge */
+div[data-testid="stBottomToolbar"] {
+    display: none !important;
+}
+
+/* Fallback: hide any toolbar that may appear */
+.stApp [data-testid="stToolbar"] {
+    display: none !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
