@@ -154,7 +154,7 @@ for idx, proj in enumerate(projects):
             {f'<video src="{file_url}" controls style="width:100%; height:100%; object-fit:contain;"></video>'
               if file_type in ("video","mp4","mov") else f'<img src="{file_url}" style="width:100%; height:100%; object-fit:contain;">'}
         </div>
-        <div style="text-align:center; font-weight:bold; margin-top:4px;">{title}</div>
+        <div style="text-align:center; font-weight:bold; margin-top:6px; color:#8B4513;">{title}</div>
         """
         st.markdown(container_html, unsafe_allow_html=True)
 
