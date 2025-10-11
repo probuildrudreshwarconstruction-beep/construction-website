@@ -425,7 +425,7 @@ button[kind="secondary"]:hover,
     border-radius: 12px;
     background: rgba(25, 18, 14, 0.85);
     box-shadow: 0 0 20px rgba(212,175,55,0.3);
-    width: 40%;
+    width: 10%;
     max-width: 60px;  /* adjust as needed */
 }
 
@@ -470,12 +470,19 @@ button[kind="secondary"]:hover,
 }
 
 /* ===== Manage Projects Table Rows ===== */
-.admin-panel .project-item {
-    border: 1px solid var(--gold);
-    padding: 8px;
-    border-radius: 8px;
-    margin-bottom: 8px;
-    box-shadow: 0 0 10px rgba(212,175,55,0.3);
+.admin-panel .project-list {
+    margin-top: 30px;
+    margin-left: 0;
+    margin-right: 0;
+    padding: 20px;
+    border: 2px solid var(--gold);
+    border-radius: 12px;
+    background: rgba(25, 18, 14, 0.85);
+    box-shadow: 0 0 20px rgba(212,175,55,0.3);
+    width: 50%;
+    max-width: 50px;  /* smaller width */
+}
+
 }/* ===== ADMIN PANEL — Final Elegant Golden Theme ===== */
 .admin-panel {
   background: linear-gradient(145deg, #3b2e2a, #8c5e3c);
