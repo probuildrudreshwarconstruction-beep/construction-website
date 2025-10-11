@@ -48,47 +48,11 @@ main.block-container {padding-top: 0rem;}
 # -------------------- Page Config --------------------
 st.set_page_config(page_title="ProBuild Rudreshwar", layout="wide")
 
-# -------------------- Force True Desktop Mode + Allow Pinch Zoom --------------------
-st.markdown("""
-<script>
-  // Remove Streamlit's mobile viewport tag
-  const existingViewport = document.querySelector('meta[name="viewport"]');
-  if (existingViewport) existingViewport.remove();
-
-  // Insert a desktop-style viewport (same as Chrome desktop)
-  const meta = document.createElement('meta');
-  meta.name = "viewport";
-  meta.content = "width=1280, initial-scale=0.85, maximum-scale=10.0, user-scalable=yes";
-  document.head.appendChild(meta);
-
-  // Prevent Streamlit container from shrinking
-  const style = document.createElement('style');
-  style.innerHTML = `
-    .block-container {
-      max-width: 1280px !important;
-      width: 1280px !important;
-      margin: 0 auto !important;
-      transform: scale(1) !important;
-      transform-origin: top center !important;
-    }
-    body, html {
-      overflow-x: auto !important;
-      zoom: 1 !important;
-    }
-  `;
-  document.head.appendChild(style);
-
-  // Fix scaling issues on iPhones
-  document.addEventListener("DOMContentLoaded", function() {
-    document.querySelector("body").style.zoom = "1.0";
-  });
-</script>
-""", unsafe_allow_html=True)
-
-
-
-
-
+# -------------------- Session State --------------------
+if "admin_visible" not in st.session_state:
+    st.session_state.admin_visible = False
+if "admin_edit_id" not in st.session_state:
+    st.session_state.admin_edit_id = None
 
 # -------------------- Secrets --------------------
 FORM_URL = st.secrets.get("GOOGLE_FORM_URL", "#")
