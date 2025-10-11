@@ -50,36 +50,23 @@ st.set_page_config(page_title="ProBuild Rudreshwar", layout="wide")
 
 
 
-# -------------------- Force Desktop Mode (with Zoom Enabled) --------------------
+# -------------------- Force Desktop View + Allow Pinch Zoom --------------------
 st.markdown("""
-<!-- Force desktop width but keep pinch-zoom enabled -->
-<meta name="viewport" content="width=1280, user-scalable=yes">
+<script>
+  // Remove Streamlit's default viewport meta tag
+  const existingViewport = document.querySelector('meta[name="viewport"]');
+  if (existingViewport) existingViewport.remove();
 
-<style>
-/* Force desktop-like layout on all devices */
-@media (max-width: 1000px) {
-  html, body, [data-testid="stAppViewContainer"], [data-testid="stToolbar"] {
-    min-width: 1280px !important;
-    overflow-x: auto !important;
-    zoom: 0.8 !important; /* adjust between 0.7–0.9 if needed */
-  }
+  // Add a desktop-style viewport that allows zooming
+  const meta = document.createElement('meta');
+  meta.name = "viewport";
+  meta.content = "width=1024, initial-scale=1.0, maximum-scale=10.0, user-scalable=yes";
+  document.head.appendChild(meta);
 
-  /* Keep sections centered and proportionate */
-  section, .fancy-section, .fancy-content {
-    width: 100% !important;
-    max-width: 1280px !important;
-    margin: 0 auto !important;
-  }
-}
-
-/* Optional: smooth scrolling + better touch behavior */
-body {
-  -webkit-overflow-scrolling: touch;
-  scroll-behavior: smooth;
-}
-</style>
+  // Optional: force desktop scaling on small screens
+  document.body.style.zoom = "0.85";
+</script>
 """, unsafe_allow_html=True)
-
 
 
 # -------------------- Session State --------------------
