@@ -48,6 +48,40 @@ main.block-container {padding-top: 0rem;}
 # -------------------- Page Config --------------------
 st.set_page_config(page_title="ProBuild Rudreshwar", layout="wide")
 
+
+
+# -------------------- Force Desktop Mode (with Zoom Enabled) --------------------
+st.markdown("""
+<!-- Force desktop width but keep pinch-zoom enabled -->
+<meta name="viewport" content="width=1280, user-scalable=yes">
+
+<style>
+/* Force desktop-like layout on all devices */
+@media (max-width: 1000px) {
+  html, body, [data-testid="stAppViewContainer"], [data-testid="stToolbar"] {
+    min-width: 1280px !important;
+    overflow-x: auto !important;
+    zoom: 0.8 !important; /* adjust between 0.7–0.9 if needed */
+  }
+
+  /* Keep sections centered and proportionate */
+  section, .fancy-section, .fancy-content {
+    width: 100% !important;
+    max-width: 1280px !important;
+    margin: 0 auto !important;
+  }
+}
+
+/* Optional: smooth scrolling + better touch behavior */
+body {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
+
 # -------------------- Session State --------------------
 if "admin_visible" not in st.session_state:
     st.session_state.admin_visible = False
