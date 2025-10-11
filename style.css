@@ -417,33 +417,23 @@ button[kind="secondary"]:hover,
 
 /* Manage Existing Projects Table */
 .admin-panel .project-list {
-    margin-top: 30px;
-    margin-left: 0;
-    margin-right: 0;
-    padding: 20px;
-    border: 2px solid var(--gold);
-    border-radius: 12px;
-    background: rgba(25, 18, 14, 0.85);
-    box-shadow: 0 0 20px rgba(212,175,55,0.3);
-    width: 10%;
-    max-width: 60px;  /* adjust as needed */
+  margin-top: 30px;
+  border: 2px solid var(--gold);
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(212,175,55,0.5);
+  padding: 20px;
+  background: rgba(20,20,20,0.8);
 }
-
 
 /* Project title entries */
-.admin-panel .project-list {
-    margin-top: 30px;
-    margin-left: 0;
-    margin-right: 0;
-    padding: 20px;
-    border: 2px solid var(--gold);
-    border-radius: 12px;
-    background: rgba(25, 18, 14, 0.85);
-    box-shadow: 0 0 20px rgba(212,175,55,0.3);
-    width: 50%;
-    max-width: 50px;  /* smaller width */
+.admin-panel .project-item {
+  border-bottom: 1px solid rgba(212,175,55,0.3);
+  padding: 10px 0;
 }
 
+.admin-panel .project-item:last-child {
+  border-bottom: none;
+}
 /* ===== Admin Headings ===== */
 .admin-heading {
     font-family: "Cinzel", serif;
@@ -475,19 +465,12 @@ button[kind="secondary"]:hover,
 }
 
 /* ===== Manage Projects Table Rows ===== */
-.admin-panel .project-list {
-    margin-top: 30px;
-    margin-left: 0;
-    margin-right: 0;
-    padding: 20px;
-    border: 2px solid var(--gold);
-    border-radius: 12px;
-    background: rgba(25, 18, 14, 0.85);
-    box-shadow: 0 0 20px rgba(212,175,55,0.3);
-    width: 50%;
-    max-width: 50px;  /* smaller width */
-}
-
+.admin-panel .project-item {
+    border: 1px solid var(--gold);
+    padding: 8px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    box-shadow: 0 0 10px rgba(212,175,55,0.3);
 }/* ===== ADMIN PANEL — Final Elegant Golden Theme ===== */
 .admin-panel {
   background: linear-gradient(145deg, #3b2e2a, #8c5e3c);
