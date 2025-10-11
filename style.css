@@ -425,7 +425,7 @@ button[kind="secondary"]:hover,
     border-radius: 12px;
     background: rgba(25, 18, 14, 0.85);
     box-shadow: 0 0 20px rgba(212,175,55,0.3);
-    width: 100%;
+    width: 40%;
     max-width: 60px;  /* adjust as needed */
 }
 
