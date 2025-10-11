@@ -426,7 +426,7 @@ button[kind="secondary"]:hover,
     background: rgba(25, 18, 14, 0.85);
     box-shadow: 0 0 20px rgba(212,175,55,0.3);
     width: 100%;
-    max-width: 600px;  /* adjust as needed */
+    max-width: 60px;  /* adjust as needed */
 }
 
 
