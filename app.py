@@ -164,35 +164,48 @@ for idx, proj in enumerate(projects):
 
 # -------------------- Address --------------------
 # -------------------- Team Members Section --------------------
+# -------------------- Team & Address Section --------------------
 st.markdown("""
 <section class="fancy-section address-section">
   <h1 class="section-title">Our Team</h1>
+  
+  <div class="team-container">
+    <div class="team-member-box">
+      <h3>🏗️ Rushikesh Shivarkar</h3>
+      <p><b>Founder & Managing Director</b><br>
+      A qualified Civil Engineer with hands-on experience in residential and industrial construction. He leads the company with a focus on quality, technical precision, and client satisfaction.</p>
+    </div>
 
-  <div class="team-member-box">
+    <div class="team-member-box">
+      <h3>👷‍♂️ Rampal Prajapati</h3>
+      <p><b>Project Manager / Site Supervisor</b><br>
+      Oversees daily site operations, ensures timely completion, and maintains safety and quality standards on every project.</p>
+    </div>
+
+    <div class="team-member-box">
+      <h3>📐 Rohan Kathare</h3>
+      <p><b>Design & Planning Engineer</b><br>
+      Responsible for architectural and structural design, project planning, and innovative layout solutions tailored to client needs.</p>
+    </div>
+
+    <div class="team-member-box">
+      <h3>👨‍🔧 Tanaji Damgude</h3>
+      <p><b>Fabrication & Shed Expert</b><br>
+      Specialist in industrial, PEB, and conventional steel shed construction — ensuring strength, precision, and durability in every structure.</p>
+    </div>
+
+    <div class="team-member-box">
+      <h3>👷‍♀️ Skilled Labour & On-Site Team</h3>
+      <p>Our hardworking labour force forms the backbone of every project — ensuring fine craftsmanship and timely delivery.</p>
+    </div>
+  </div>
+
+  <h1 class="section-title" style="margin-top:50px;">Office Address</h1>
+  <div class="address-card">
     <p><b>Er. Rushikesh Shivarkar</b></p>
-    <p>Founder & CEO — B.E. Civil | Govt. Contractor | Vastu Expert</p>
+    <p><b>Address:</b> Lane No.1, Laxmi Colony, Pune – 411043</p>
+    <p><b>Contact:</b> +91 7745065820</p>
   </div>
-
-  <div class="team-member-box">
-    <p><b>Member Name 2</b></p>
-    <p>Project Engineer — Ensuring quality and precision in every construction project.</p>
-  </div>
-
-  <div class="team-member-box">
-    <p><b>Member Name 3</b></p>
-    <p>Site Supervisor — Leading on-site operations and maintaining safety standards.</p>
-  </div>
-
-  <div class="team-member-box">
-    <p><b>Member Name 4</b></p>
-    <p>Architect & Designer — Creating functional and elegant architectural solutions.</p>
-  </div>
-
-  <div class="team-member-box">
-    <p><b>Member Name 5</b></p>
-    <p>Interior Designer — Crafting aesthetically pleasing and functional interiors.</p>
-  </div>
-
 </section>
 """, unsafe_allow_html=True)
 
