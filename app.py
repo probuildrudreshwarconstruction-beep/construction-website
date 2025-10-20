@@ -278,7 +278,7 @@ if st.session_state.admin_visible:
         if st.button("📊 Check Responses"):
             st.markdown(f"<meta http-equiv='refresh' content='0; url={RESPONSES_LINK}'>", unsafe_allow_html=True)
 
-        # ---------- Change Password ----------
+        # Change Password
         with st.expander("🔐 Change Admin Password"):
             old = st.text_input("Old Password", type="password", key="old_pass")
             new = st.text_input("New Password", type="password", key="new_pass")
@@ -295,21 +295,20 @@ if st.session_state.admin_visible:
                     st.success("✅ Password changed successfully! It will apply on next login.")
                     st.rerun()
 
-        # ---------- Upload Project ----------
+        # Upload Project (no description)
         st.markdown('<h2 class="admin-heading">Upload New Project</h2>', unsafe_allow_html=True)
-        uploaded = st.file_uploader("Upload media (image/video)", type=["jpg", "png", "mp4", "mov"], key="upload_file")
+        uploaded = st.file_uploader("Upload media (image/video)", type=["jpg","png","mp4","mov"], key="upload_file")
         up_title = st.text_input("⚜️", key="upload_title", placeholder="Enter Project / Site Name")
 
-        # ✅ Description removed safely (no up_desc needed)
         if st.button("Submit Project"):
             if uploaded and up_title:
                 url = upload_media(uploaded)
                 file_type = uploaded.type.split("/")[0]
-                add_project(up_title, "", url, file_type)  # Empty description field handled gracefully
+                add_project(up_title, "", url, file_type)  # no description
                 st.success("✅ Project uploaded successfully!")
                 st.rerun()
 
-        # ---------- Manage Projects ----------
+        # Manage Projects (no description edit)
         st.markdown('<h2 class="admin-heading">Manage Existing Projects</h2>', unsafe_allow_html=True)
         projects = list_projects() or []
         for pr in projects:
@@ -322,18 +321,16 @@ if st.session_state.admin_visible:
                 if st.button("Edit", key=f"edit-{project_id}"):
                     st.session_state.admin_edit_id = project_id
                     st.session_state.admin_edit_title = pr.get("title")
-                    st.session_state.admin_edit_desc = pr.get("description")
             with col3:
                 if st.button("Delete", key=f"delete-{project_id}"):
                     delete_project(project_id)
                     st.success("Deleted successfully!")
                     st.rerun()
 
-        # ---------- Edit Project ----------
+        # Edit Project (title & media only)
         if st.session_state.admin_edit_id:
             st.markdown('<h2 class="admin-heading">Edit Project</h2>', unsafe_allow_html=True)
-            new_title = st.text_input("Title", st.session_state.admin_edit_title)
-            new_desc = st.text_area("Description", st.session_state.admin_edit_desc)
+            new_title = st.text_input("Project Title", st.session_state.admin_edit_title)
             new_file = st.file_uploader("Replace Media (optional)", type=["jpg", "png", "mp4", "mov"])
             if st.button("Save Changes"):
                 file_url = None
@@ -341,11 +338,10 @@ if st.session_state.admin_visible:
                 if new_file:
                     file_url = upload_media(new_file)
                     file_type = new_file.type.split("/")[0]
-                update_project(st.session_state.admin_edit_id, new_title, new_desc, file_url, file_type)
-                st.success("Updated!")
+                update_project(st.session_state.admin_edit_id, new_title, "", file_url, file_type)  # blank desc
+                st.success("✅ Project updated successfully!")
                 st.session_state.admin_edit_id = None
                 st.rerun()
-
     else:
         if password:
             st.error("❌ Wrong password.")
