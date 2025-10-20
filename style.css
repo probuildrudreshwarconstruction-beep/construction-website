@@ -846,54 +846,30 @@ button[kind="secondary"]:hover,
 }
 
 /* ===== Address Section ===== */
-.address-section {
+/* ===== Team Section ===== */
+.team-section {
   background: linear-gradient(145deg, #3b2e2a, #8c5e3c);
-  text-align: center;
-  padding: 60px 40px;
-}
-
-.address-card {
-  background: rgba(0,0,0,0.3);
-  border: 2px solid var(--gold);
-  border-radius: 16px;
-  display: inline-block;
-  padding: 20px 40px;
-  box-shadow: 0 0 20px rgba(212,175,55,0.4);
   color: var(--offwhite);
-  font-size: 1.1rem;
+  padding: 50px 40px;
   font-family: "Playfair Display", serif;
 }
-.address-card p {
-  margin: 10px 0;
+
+.team-member {
+  text-align: left;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #1e90ff; /* blue line separator */
 }
 
-/* ===== Team Members Boxes ===== */
-.team-member-box {
-  background: rgba(0,0,0,0.3);
-  border: 2px solid var(--gold);
-  border-radius: 16px;
-  display: inline-block;
-  padding: 20px 30px;
-  box-shadow: 0 0 20px rgba(212,175,55,0.4);
-  color: var(--offwhite);
-  font-family: "Playfair Display", serif;
-  margin: 15px;
-  text-align: center;
-  min-width: 200px;
+.team-member h2 {
+  font-size: 1.8rem; /* big heading for name */
+  margin: 0 0 8px 0;
 }
 
-.team-member-box h3 {
-  font-family: "Cinzel", serif;
-  color: var(--gold);
-  font-size: 1.5rem;
-  margin-bottom: 8px;
-}
-
-.team-member-box p {
-  font-size: 1rem;
+.team-member p {
+  font-size: 1rem; /* smaller description */
   margin: 0;
 }
-
 
 
 
