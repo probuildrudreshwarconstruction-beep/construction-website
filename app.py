@@ -158,10 +158,7 @@ for idx, proj in enumerate(projects):
         """
         st.markdown(container_html, unsafe_allow_html=True)
 
-        with st.expander("View More"):
-            formatted_desc = "".join([f"<li>{line.strip()}</li>" for line in desc.split("\n") if line.strip()])
-            st.markdown(f"<ul class='viewmore-list'>{formatted_desc}</ul>", unsafe_allow_html=True)
-
+        
 # -------------------- Address --------------------
 # -------------------- Team Members Section --------------------
 # -------------------- Team & Address Section --------------------
