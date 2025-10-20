@@ -186,37 +186,6 @@ for idx, proj in enumerate(projects):
         """
         st.markdown(container_html, unsafe_allow_html=True)
 
-# -------------------- Team Section (images removed) --------------------
-st.markdown(f"""
-<section class="fancy-section team-section">
-  <h1 class="section-title">Our Team</h1>
-  <div class="team-container">
-    <div class="team-member">
-      <p><b>🏗️ Er. Rushikesh Shivarkar</b><br>Founder & Managing Director<br><br>
-      A qualified Civil Engineer with hands-on experience in residential and industrial construction. He leads the company with a focus on quality, technical precision, and client satisfaction.</p>
-    </div>
-    <div class="team-member">
-      <p><b>Rampal Prajapati</b><br>👷‍♂️ Project Manager / Site Supervisor<br><br>
-      Oversees daily site operations, ensures timely completion, and maintains safety and quality standards on every project.</p>
-    </div>
-    <div class="team-member">
-      <p><b>Rohan Kathare</b><br>📐 Design & Planning Engineer<br><br>
-      Responsible for architectural and structural design, project planning, and innovative layout solutions tailored to client needs.</p>
-    </div>
-    <div class="team-member">
-      <p><b>Tanaji Damgude</b><br>👨‍🔧 Fabrication & Shed Expert<br><br>
-      Specialist in industrial, PEB, and conventional steel shed construction — ensuring strength, precision, and durability in every structure.</p>
-    </div>
-    <div class="team-member">
-      <p><b>⚜️</b><br><br>
-      Our hardworking labour force forms the backbone of every project — ensuring fine craftsmanship and timely delivery.</p>
-    </div>
-  </div>
-  <div class="office-address">
-    <p><b>Our Office:</b><br>123 Construction Lane, Rudreshwar City, Maharashtra, India</p>
-  </div>
-</section>
-""", unsafe_allow_html=True)
 # -------------------- Contact --------------------
 whatsapp_logo = "https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
 email_logo = "https://upload.wikimedia.org/wikipedia/commons/4/4e/Mail_%28iOS%29.svg"
