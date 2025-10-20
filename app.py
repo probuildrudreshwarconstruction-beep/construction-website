@@ -126,23 +126,23 @@ st.markdown("""
   <div class="team-container">
 
     <div class="team-member">
-      <img src="assets/team/rushikesh.jpg" alt="Er. Rushikesh Shivarkar">
-      <p><b>Er. Rushikesh Shivarkar</b><br>Founder & CEO</p>
+      <h2>Er. Rushikesh Shivarkar</h2>
+      <p>Founder & CEO — B.E. Civil | Govt. Contractor | Vastu Expert</p>
     </div>
 
     <div class="team-member">
-      <img src="assets/team/member2.jpg" alt="Team Member">
-      <p><b>Member Name</b><br>Project Engineer</p>
+      <h2>Member Name</h2>
+      <p>Project Engineer — Ensuring quality and precision in every construction project.</p>
     </div>
 
     <div class="team-member">
-      <img src="assets/team/member3.jpg" alt="Team Member">
-      <p><b>Member Name</b><br>Site Supervisor</p>
+      <h2>Member Name</h2>
+      <p>Site Supervisor — Leading on-site operations and maintaining safety standards.</p>
     </div>
 
     <div class="team-member">
-      <img src="assets/team/member4.jpg" alt="Team Member">
-      <p><b>Member Name</b><br>Architect & Designer</p>
+      <h2>Member Name</h2>
+      <p>Architect & Designer — Creating functional and elegant architectural solutions.</p>
     </div>
 
   </div>
@@ -153,8 +153,6 @@ st.markdown("""
   </div>
 </section>
 """, unsafe_allow_html=True)
-
-
 
 # -------------------- Projects Section --------------------
 st.markdown("<h1 class='section-title' style='text-align:center;'>Our Projects</h1>", unsafe_allow_html=True)
