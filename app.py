@@ -264,8 +264,8 @@ st.markdown(f"""
 
 # -------------------- Admin Panel --------------------
 st.markdown("<hr><h2></h2><hr>", unsafe_allow_html=True)
-if st.button("🔒"):
-if st.button(""):
+if st.button("🔒");
+if st.button("");
     st.session_state.admin_visible = not st.session_state.admin_visible
 
 if st.session_state.admin_visible:
