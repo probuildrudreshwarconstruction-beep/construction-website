@@ -48,6 +48,32 @@ main.block-container {padding-top: 0rem;}
 # -------------------- Page Config --------------------
 st.set_page_config(page_title="ProBuild Rudreshwar", layout="wide")
 
+# -------------------- Force Desktop Mode (with Zoom Enabled) --------------------
+st.markdown("""
+<meta name="viewport" content="width=1280, user-scalable=yes">
+
+<style>
+@media (max-width: 1000px) {
+  html, body, [data-testid="stAppViewContainer"], [data-testid="stToolbar"] {
+    min-width: 1280px !important;
+    overflow-x: auto !important;
+    zoom: 0.8 !important;
+  }
+
+  section, .fancy-section, .fancy-content {
+    width: 100% !important;
+    max-width: 1280px !important;
+    margin: 0 auto !important;
+  }
+}
+
+body {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+</style>
+""", unsafe_allow_html=True)
+
 # -------------------- Session State --------------------
 if "admin_visible" not in st.session_state:
     st.session_state.admin_visible = False
@@ -59,6 +85,7 @@ FORM_URL = st.secrets.get("GOOGLE_FORM_URL", "#")
 WHATSAPP = st.secrets.get("WHATSAPP_NUMBER", "")
 EMAIL = st.secrets.get("EMAIL", "mailto:probuilder@example.com")
 INSTA = st.secrets.get("INSTAGRAM_URL", "https://instagram.com/")
+INSTA2 = st.secrets.get("INSTAGRAM2_URL", "https://instagram.com/")
 RESPONSES_LINK = st.secrets.get("RESPONSES_LINK", "#")
 wa_link = f"https://wa.me/{WHATSAPP.replace('+','').replace(' ','')}" if WHATSAPP else "#"
 
@@ -79,14 +106,15 @@ st.markdown("""
   <h1 class="section-title">All About Us</h1>
   <div class="fancy-content">
     <div class="left">
-      <p>ProBuild Rudreshwar Construction & Developers is led by <b>Er. Rushikesh Shivarkar</b>, B.E. Civil — Govt. Contractor & Vastu Expert.</p>
       <ul>
-        <li>Trusted Construction Solutions since 2015</li>
-        <li>Residential & Industrial Projects</li>
-        <li>Modern Design with Structural Integrity</li>
-        <li>Timely Delivery & Cost-effective Solutions</li>
-
-      
+        <li>ProBuild Rudreshwar Constructions is a trusted name in the field of building design and construction.</li>
+        <li>We specialize in residential, commercial, and industrial projects, delivering quality, strength, and precision in every structure we create.</li>
+        <li>With expertise in house design and construction, industrial sheds, PEB (Pre-Engineered Building) sheds, and conventional steel structures, we provide complete turnkey solutions — from planning and design to execution and finishing.</li>
+        <li>Our team is dedicated to ensuring timely completion, superior workmanship, and cost-effective solutions that meet our clients’ expectations.</li>
+        <li>Every project we undertake reflects our commitment to innovation, durability, and customer satisfaction.</li>
+        <li>At ProBuild Rudreshwar Constructions, we believe that every building is more than just concrete and steel — it’s a vision brought to life with trust and excellence.</li>
+      </ul>
+    </div>
   </div>
 </section>
 """, unsafe_allow_html=True)
@@ -114,7 +142,8 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # -------------------- Projects Section --------------------
-st.markdown("<h1 class='section-title' style='text-align:center;'>Our Projects</h1>", unsafe_allow_html=True)
+st.markdown("<h1 class='project-font' style='text-align:center;'>Our Projects</h1>", unsafe_allow_html=True)
+
 
 try:
     projects = list_projects() or []
@@ -123,18 +152,17 @@ except:
 
 if not projects:
     projects = [
-        {"title":"Luxury Villa","description":"Modern villa with eco-friendly materials.","file_url":"https://www.w3schools.com/w3images/fjords.jpg","file_type":"image"},
-        {"title":"Commercial Renovation","description":"Revamped commercial complex.","file_url":"https://www.w3schools.com/w3images/lights.jpg","file_type":"image"},
-        {"title":"Interior Design","description":"Elegant interior design.","file_url":"https://www.w3schools.com/w3images/mountains.jpg","file_type":"image"}
+        {"title": "Luxury Villa", "file_url": "https://www.w3schools.com/w3images/fjords.jpg", "file_type": "image"},
+        {"title": "Commercial Renovation", "file_url": "https://www.w3schools.com/w3images/lights.jpg", "file_type": "image"},
+        {"title": "Interior Design", "file_url": "https://www.w3schools.com/w3images/mountains.jpg", "file_type": "image"}
     ]
 
 cols = st.columns(3)
 for idx, proj in enumerate(projects):
     col = cols[idx % 3]
     with col:
-        title = proj.get("title","Untitled")
-        desc = proj.get("description","")
-        file_url = proj.get("file_url","")
+        title = proj.get("title", "Untitled")
+        file_url = proj.get("file_url", "")
         file_type = (proj.get("file_type") or "").lower()
 
         container_html = f"""
@@ -158,65 +186,100 @@ for idx, proj in enumerate(projects):
         """
         st.markdown(container_html, unsafe_allow_html=True)
 
-        with st.expander("View More"):
-            formatted_desc = "".join([f"<li>{line.strip()}</li>" for line in desc.split("\n") if line.strip()])
-            st.markdown(f"<ul class='viewmore-list'>{formatted_desc}</ul>", unsafe_allow_html=True)
-
-# -------------------- Address --------------------
-st.markdown("""
-<section class="fancy-section address-section">
-  <h1 class="section-title">⚜️</h1>
-  <div class="address-card">
-    <p><b>Er.</b>Rushikesh Shivarkar</p>
-    <p><b>Address:</b> Lane No.1, Laxmi Colony, Pune – 411043</p>
-    <p><b>Contact:</b> +91 7745065820</p>
+# -------------------- Team Section (images removed) --------------------
+st.markdown(f"""
+<section class="fancy-section team-section">
+  <h1 class="section-title">Our Team</h1>
+  <div class="team-container">
+    <div class="team-member">
+      <p><b>🏗️ Er. Rushikesh Shivarkar</b><br>Founder & Managing Director<br><br>
+      A qualified Civil Engineer with hands-on experience in residential and industrial construction. He leads the company with a focus on quality, technical precision, and client satisfaction.</p>
+    </div>
+    <div class="team-member">
+      <p><b>Rampal Prajapati</b><br>👷‍♂️ Project Manager / Site Supervisor<br><br>
+      Oversees daily site operations, ensures timely completion, and maintains safety and quality standards on every project.</p>
+    </div>
+    <div class="team-member">
+      <p><b>Rohan Kathare</b><br>📐 Design & Planning Engineer<br><br>
+      Responsible for architectural and structural design, project planning, and innovative layout solutions tailored to client needs.</p>
+    </div>
+    <div class="team-member">
+      <p><b>Tanaji Damgude</b><br>👨‍🔧 Fabrication & Shed Expert<br><br>
+      Specialist in industrial, PEB, and conventional steel shed construction — ensuring strength, precision, and durability in every structure.</p>
+    </div>
+    <div class="team-member">
+      <p><b>⚜️</b><br><br>
+      Our hardworking labour force forms the backbone of every project — ensuring fine craftsmanship and timely delivery.</p>
+    </div>
+  </div>
+  <div class="office-address">
+    <p><b>Our Office:</b><br>123 Construction Lane, Rudreshwar City, Maharashtra, India</p>
   </div>
 </section>
 """, unsafe_allow_html=True)
-
 # -------------------- Contact --------------------
+whatsapp_logo = "https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+email_logo = "https://upload.wikimedia.org/wikipedia/commons/4/4e/Mail_%28iOS%29.svg"
+insta_logo = "https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg"
+
 st.markdown(f"""
 <section class="fancy-section" id="cta">
   <h1 class="section-title">Contact Us</h1>
+
   <div class="fancy-content">
     <div class="left">
       <a href="{FORM_URL}" target="_blank">
         <button class="cta-button" style="background:var(--gold); color:#000;">
-          📄 Enquire via Google Form
+          📄 Enquiry Form
         </button>
       </a>
     </div>
     <div class="right">
       <a href="{wa_link}" target="_blank">
-        <button class="cta-button" style="background:var(--bronze); color:#fff;">
-          💬 WhatsApp
+        <button class="cta-button" style="background:#25D366; color:#075E54; font-weight:bold; border:none;">
+          <img src="{whatsapp_logo}" style="width:20px; height:20px; vertical-align:middle; margin-right:6px;">
+          WhatsApp
         </button>
       </a>
     </div>
   </div>
+
   <div class="fancy-content" style="margin-top:40px;">
     <div class="left">
       <a href="{EMAIL}" target="_blank">
         <button class="cta-button" style="background:#1e1e1e; color:var(--gold);">
-          ✉️ Email Us
+          <img src="{email_logo}" style="width:20px; height:20px; vertical-align:middle; margin-right:6px;">
+          Email Us
         </button>
       </a>
     </div>
     <div class="right">
       <a href="{INSTA}" target="_blank">
         <button class="cta-button" style="background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af,#515bd4); color:white;">
-          📸 Instagram
+          <img src="{insta_logo}" style="width:20px; height:20px; vertical-align:middle; margin-right:6px;">
+          ProBuild Rudreshwar
         </button>
       </a>
     </div>
   </div>
+
+  <!-- Second Instagram Button -->
+  <div class="fancy-content" style="margin-top:20px; justify-content:center;">
+    <a href="{INSTA2}" target="_blank">
+      <button class="cta-button" style="background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af,#515bd4); color:white;">
+        <img src="{insta_logo}" style="width:20px; height:20px; vertical-align:middle; margin-right:6px;">
+        श्री ᴀꜱᴛʀᴏ ᴠᴀꜱᴛᴜ
+      </button>
+    </a>
+  </div>
+
   <p style="text-align:center; margin-top:12px; font-size:0.9rem; opacity:0.8;">© 2025 ProBuild Rudreshwar Constructions</p>
 </section>
 """, unsafe_allow_html=True)
 
 # -------------------- Admin Panel --------------------
 st.markdown("<hr><h2></h2><hr>", unsafe_allow_html=True)
-if st.button("🔒"):
+if st.button("."):
     st.session_state.admin_visible = not st.session_state.admin_visible
 
 if st.session_state.admin_visible:
@@ -247,16 +310,16 @@ if st.session_state.admin_visible:
                     st.success("✅ Password changed successfully! It will apply on next login.")
                     st.rerun()
 
-        # Upload Project
+        # Upload Project (no description)
         st.markdown('<h2 class="admin-heading">Upload New Project</h2>', unsafe_allow_html=True)
-        uploaded = st.file_uploader("Upload media (image/video)", type=["jpg","png","mp4","mov"], key="upload_file")
+        uploaded = st.file_uploader("Upload media (image/video)", type=["jpg", "png", "mp4", "mov"], key="upload_file")
         up_title = st.text_input("⚜️", key="upload_title", placeholder="Enter Project / Site Name")
-        up_desc = st.text_area("⚜️", key="upload_desc", placeholder="Enter Project Description")
+
         if st.button("Submit Project"):
-            if uploaded and up_title and up_desc:
+            if uploaded and up_title:
                 url = upload_media(uploaded)
                 file_type = uploaded.type.split("/")[0]
-                add_project(up_title, up_desc, url, file_type)
+                add_project(up_title, "", url, file_type)
                 st.success("Project uploaded successfully!")
                 st.rerun()
 
@@ -266,33 +329,31 @@ if st.session_state.admin_visible:
         for pr in projects:
             project_id = pr.get("id")
             project_title = pr.get("title", "Untitled")
-            col1, col2, col3 = st.columns([0.7,0.15,0.15])
+            col1, col2, col3 = st.columns([0.7, 0.15, 0.15])
             with col1:
                 st.markdown(f"<div class='project-item'><div class='title'><b>{project_title}</b></div></div>", unsafe_allow_html=True)
             with col2:
                 if st.button("Edit", key=f"edit-{project_id}"):
                     st.session_state.admin_edit_id = project_id
                     st.session_state.admin_edit_title = pr.get("title")
-                    st.session_state.admin_edit_desc = pr.get("description")
             with col3:
                 if st.button("Delete", key=f"delete-{project_id}"):
                     delete_project(project_id)
                     st.success("Deleted successfully!")
                     st.rerun()
 
-        # Edit Project Form
+        # Edit Project (no description)
         if st.session_state.admin_edit_id:
             st.markdown('<h2 class="admin-heading">Edit Project</h2>', unsafe_allow_html=True)
             new_title = st.text_input("Title", st.session_state.admin_edit_title)
-            new_desc = st.text_area("Description", st.session_state.admin_edit_desc)
-            new_file = st.file_uploader("Replace Media (optional)", type=["jpg","png","mp4","mov"])
+            new_file = st.file_uploader("Replace Media (optional)", type=["jpg", "png", "mp4", "mov"])
             if st.button("Save Changes"):
                 file_url = None
                 file_type = None
                 if new_file:
                     file_url = upload_media(new_file)
                     file_type = new_file.type.split("/")[0]
-                update_project(st.session_state.admin_edit_id, new_title, new_desc, file_url, file_type)
+                update_project(st.session_state.admin_edit_id, new_title, "", file_url, file_type)
                 st.success("Updated!")
                 st.session_state.admin_edit_id = None
                 st.rerun()
