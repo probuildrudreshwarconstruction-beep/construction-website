@@ -473,7 +473,7 @@ button[kind="secondary"]:hover,
     box-shadow: 0 0 10px rgba(212,175,55,0.3);
 }/* ===== ADMIN PANEL — Final Elegant Golden Theme ===== */
 .admin-panel {
-  background: linear-gradient(145deg, #3b2e2a, #8c5e3c);
+  background: linear-gradient(145deg, #053357, #03b3d2);
   border: 2px solid var(--gold);
   border-radius: 16px;
   padding: 40px;
