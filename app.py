@@ -163,14 +163,36 @@ for idx, proj in enumerate(projects):
             st.markdown(f"<ul class='viewmore-list'>{formatted_desc}</ul>", unsafe_allow_html=True)
 
 # -------------------- Address --------------------
+# -------------------- Team Members Section --------------------
 st.markdown("""
 <section class="fancy-section address-section">
-  <h1 class="section-title">⚜️</h1>
-  <div class="address-card">
-    <p><b>Er.</b>Rushikesh Shivarkar</p>
-    <p><b>Address:</b> Lane No.1, Laxmi Colony, Pune – 411043</p>
-    <p><b>Contact:</b> +91 7745065820</p>
+  <h1 class="section-title">Our Team</h1>
+
+  <div class="team-member-box">
+    <p><b>Er. Rushikesh Shivarkar</b></p>
+    <p>Founder & CEO — B.E. Civil | Govt. Contractor | Vastu Expert</p>
   </div>
+
+  <div class="team-member-box">
+    <p><b>Member Name 2</b></p>
+    <p>Project Engineer — Ensuring quality and precision in every construction project.</p>
+  </div>
+
+  <div class="team-member-box">
+    <p><b>Member Name 3</b></p>
+    <p>Site Supervisor — Leading on-site operations and maintaining safety standards.</p>
+  </div>
+
+  <div class="team-member-box">
+    <p><b>Member Name 4</b></p>
+    <p>Architect & Designer — Creating functional and elegant architectural solutions.</p>
+  </div>
+
+  <div class="team-member-box">
+    <p><b>Member Name 5</b></p>
+    <p>Interior Designer — Crafting aesthetically pleasing and functional interiors.</p>
+  </div>
+
 </section>
 """, unsafe_allow_html=True)
 
