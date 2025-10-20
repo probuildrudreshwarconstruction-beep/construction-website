@@ -5,8 +5,10 @@ import os, base64, json, hashlib
 # -------------------- Password Config --------------------
 PASS_FILE = "admin_password.json"
 
+
 def hash_pass(p):
     return hashlib.sha256(p.encode()).hexdigest()
+
 
 def get_password():
     if os.path.exists(PASS_FILE):
@@ -16,14 +18,17 @@ def get_password():
         return hash_pass(st.secrets["admin_password"])
     return None
 
+
 def set_password(new_pass):
     with open(PASS_FILE, "w") as f:
         json.dump({"password": hash_pass(new_pass)}, f)
+
 
 # -------------------- Base64 Image Helper --------------------
 def get_base64_image(image_path):
     with open(image_path, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode()
+
 
 # -------------------- Load external CSS --------------------
 def local_css(file_name):
@@ -33,17 +38,21 @@ def local_css(file_name):
     else:
         st.warning(f"CSS file '{file_name}' not found.")
 
+
 local_css("style.css")
 
 # -------------------- Hide Streamlit Default Header & Footer --------------------
-st.markdown("""
+st.markdown(
+    """
 <style>
 header[data-testid="stHeader"] {display: none !important;}
 #MainMenu {visibility: hidden;}
 footer {visibility: hidden;}
 main.block-container {padding-top: 0rem;}
 </style>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
 # -------------------- Page Config --------------------
 st.set_page_config(page_title="ProBuild Rudreshwar", layout="wide")
@@ -61,21 +70,25 @@ EMAIL = st.secrets.get("EMAIL", "mailto:probuilder@example.com")
 INSTA = st.secrets.get("INSTAGRAM_URL", "https://instagram.com/")
 INSTA2 = st.secrets.get("INSTAGRAM2_URL", "https://instagram.com/")
 RESPONSES_LINK = st.secrets.get("RESPONSES_LINK", "#")
-wa_link = f"https://wa.me/{WHATSAPP.replace('+','').replace(' ','')}" if WHATSAPP else "#"
+wa_link = f"https://wa.me/{WHATSAPP.replace('+', '').replace(' ', '')}" if WHATSAPP else "#"
 
 # -------------------- Header --------------------
 logo_base64 = get_base64_image("assets/logo.png")
-st.markdown(f"""
+st.markdown(
+    f"""
 <header class="top-header">
   <div class="header-left">
     <img src="data:image/png;base64,{logo_base64}" class="company-logo" alt="Logo">
     <h1 class="company-name">ProBuild Rudreshwar Constructions</h1>
   </div>
 </header>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
 # -------------------- About Us --------------------
-st.markdown("""
+st.markdown(
+    """
 <section class="fancy-section" id="about">
   <h1 class="section-title">All About Us</h1>
   <div class="fancy-content">
@@ -86,14 +99,17 @@ st.markdown("""
         <li>Residential & Industrial Projects</li>
         <li>Modern Design with Structural Integrity</li>
         <li>Timely Delivery & Cost-effective Solutions</li>
-
-      
+      </ul>
+    </div>
   </div>
 </section>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
 # -------------------- Our Services --------------------
-st.markdown("""
+st.markdown(
+    """
 <section class="fancy-section" id="services">
   <h1 class="section-title">Our Services</h1>
   <div class="fancy-content">
@@ -103,7 +119,7 @@ st.markdown("""
         <li>Architectural Drawing & Design</li>
         <li>Structural Steel Designing</li>
         <li>3D Bungalow / Building Designing</li>
-        <li>Interior DesignLock & key Project</li>
+        <li>Interior Design Lock & Key Project</li>
         <li>Estimation, Costing & Property Evaluation</li>
         <li>Pre-Engineering Buildings</li>
         <li>Conventional Industrial Building</li>
@@ -112,30 +128,35 @@ st.markdown("""
     </div>
   </div>
 </section>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
 # -------------------- Projects Section --------------------
 st.markdown("<h1 class='section-title' style='text-align:center;'>Our Projects</h1>", unsafe_allow_html=True)
 
 try:
     projects = list_projects() or []
-except:
+except Exception:
     projects = []
 
 if not projects:
     projects = [
-        {"title":"Luxury Villa","description":"Modern villa with eco-friendly materials.","file_url":"https://www.w3schools.com/w3images/fjords.jpg","file_type":"image"},
-        {"title":"Commercial Renovation","description":"Revamped commercial complex.","file_url":"https://www.w3schools.com/w3images/lights.jpg","file_type":"image"},
-        {"title":"Interior Design","description":"Elegant interior design.","file_url":"https://www.w3schools.com/w3images/mountains.jpg","file_type":"image"}
+        {"title": "Luxury Villa", "description": "Modern villa with eco-friendly materials.",
+         "file_url": "https://www.w3schools.com/w3images/fjords.jpg", "file_type": "image"},
+        {"title": "Commercial Renovation", "description": "Revamped commercial complex.",
+         "file_url": "https://www.w3schools.com/w3images/lights.jpg", "file_type": "image"},
+        {"title": "Interior Design", "description": "Elegant interior design.",
+         "file_url": "https://www.w3schools.com/w3images/mountains.jpg", "file_type": "image"},
     ]
 
 cols = st.columns(3)
 for idx, proj in enumerate(projects):
     col = cols[idx % 3]
     with col:
-        title = proj.get("title","Untitled")
-        desc = proj.get("description","")
-        file_url = proj.get("file_url","")
+        title = proj.get("title", "Untitled")
+        desc = proj.get("description", "")
+        file_url = proj.get("file_url", "")
         file_type = (proj.get("file_type") or "").lower()
 
         container_html = f"""
@@ -153,17 +174,15 @@ for idx, proj in enumerate(projects):
             overflow:hidden;
         ">
             {f'<video src="{file_url}" controls style="width:100%; height:100%; object-fit:contain;"></video>'
-              if file_type in ("video","mp4","mov") else f'<img src="{file_url}" style="width:100%; height:100%; object-fit:contain;">'}
+              if file_type in ("video", "mp4", "mov") else f'<img src="{file_url}" style="width:100%; height:100%; object-fit:contain;">'}
         </div>
         <div style="text-align:center; font-weight:bold; margin-top:6px; color:#8B4513;">{title}</div>
         """
         st.markdown(container_html, unsafe_allow_html=True)
 
-
-# -------------------- Address --------------------
-# -------------------- Team Members Section --------------------
 # -------------------- Team & Address Section --------------------
-st.markdown("""
+st.markdown(
+    """
 <section class="team-section">
   <h1 class="section-title">Our Team</h1>
 
@@ -199,15 +218,17 @@ st.markdown("""
     </p>
   </div>
 </section>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
-# -------------------- Contact --------------------
 # -------------------- Contact --------------------
 whatsapp_logo = "https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
 email_logo = "https://upload.wikimedia.org/wikipedia/commons/4/4e/Mail_%28iOS%29.svg"
 insta_logo = "https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg"
 
-st.markdown(f"""
+st.markdown(
+    f"""
 <section class="fancy-section" id="cta">
   <h1 class="section-title">Contact Us</h1>
 
@@ -248,7 +269,6 @@ st.markdown(f"""
     </div>
   </div>
 
-  <!-- Second Instagram Button -->
   <div class="fancy-content" style="margin-top:20px; justify-content:center;">
     <a href="{INSTA2}" target="_blank">
       <button class="cta-button" style="background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af,#515bd4); color:white;">
@@ -260,17 +280,19 @@ st.markdown(f"""
 
   <p style="text-align:center; margin-top:12px; font-size:0.9rem; opacity:0.8;">© 2025 ProBuild Rudreshwar Constructions</p>
 </section>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
 # -------------------- Admin Panel --------------------
 st.markdown("<hr><h2></h2><hr>", unsafe_allow_html=True)
-if st.button("🔒"):
-    if st.button(""):
-        st.session_state.admin_visible = not st.session_state.admin_visible
+
+if st.button("🔒 Admin Login"):
+    st.session_state.admin_visible = not st.session_state.admin_visible
 
 if st.session_state.admin_visible:
     st.markdown('<div class="admin-panel">', unsafe_allow_html=True)
-    password = st.text_input("⚜️", type="password", key="admin_pw", placeholder="Enter admin password")
+    password = st.text_input("⚜️ Enter Admin Password", type="password", key="admin_pw")
     stored_password = get_password()
 
     if stored_password and password and hash_pass(password) == stored_password:
@@ -298,16 +320,19 @@ if st.session_state.admin_visible:
 
         # Upload Project
         st.markdown('<h2 class="admin-heading">Upload New Project</h2>', unsafe_allow_html=True)
-        uploaded = st.file_uploader("Upload media (image/video)", type=["jpg","png","mp4","mov"], key="upload_file")
-        up_title = st.text_input("⚜️", key="upload_title", placeholder="Enter Project / Site Name")
-        up_desc = st.text_area("⚜️", key="upload_desc", placeholder="Enter Project Description")
+        uploaded = st.file_uploader("Upload media (image/video)", type=["jpg", "png", "mp4", "mov"], key="upload_file")
+        up_title = st.text_input("⚜️ Project / Site Name", key="upload_title")
+        up_desc = st.text_area("⚜️ Project Description", key="upload_desc")
+
         if st.button("Submit Project"):
             if uploaded and up_title and up_desc:
                 url = upload_media(uploaded)
                 file_type = uploaded.type.split("/")[0]
                 add_project(up_title, up_desc, url, file_type)
-                st.success("Project uploaded successfully!")
+                st.success("✅ Project uploaded successfully!")
                 st.rerun()
+            else:
+                st.warning("⚠️ Please fill all fields and upload a file.")
 
         # Manage Projects
         st.markdown('<h2 class="admin-heading">Manage Existing Projects</h2>', unsafe_allow_html=True)
@@ -315,9 +340,9 @@ if st.session_state.admin_visible:
         for pr in projects:
             project_id = pr.get("id")
             project_title = pr.get("title", "Untitled")
-            col1, col2, col3 = st.columns([0.7,0.15,0.15])
+            col1, col2, col3 = st.columns([0.7, 0.15, 0.15])
             with col1:
-                st.markdown(f"<div class='project-item'><div class='title'><b>{project_title}</b></div></div>", unsafe_allow_html=True)
+                st.markdown(f"<b>{project_title}</b>", unsafe_allow_html=True)
             with col2:
                 if st.button("Edit", key=f"edit-{project_id}"):
                     st.session_state.admin_edit_id = project_id
@@ -326,7 +351,7 @@ if st.session_state.admin_visible:
             with col3:
                 if st.button("Delete", key=f"delete-{project_id}"):
                     delete_project(project_id)
-                    st.success("Deleted successfully!")
+                    st.success("✅ Deleted successfully!")
                     st.rerun()
 
         # Edit Project Form
@@ -334,7 +359,7 @@ if st.session_state.admin_visible:
             st.markdown('<h2 class="admin-heading">Edit Project</h2>', unsafe_allow_html=True)
             new_title = st.text_input("Title", st.session_state.admin_edit_title)
             new_desc = st.text_area("Description", st.session_state.admin_edit_desc)
-            new_file = st.file_uploader("Replace Media (optional)", type=["jpg","png","mp4","mov"])
+            new_file = st.file_uploader("Replace Media (optional)", type=["jpg", "png", "mp4", "mov"])
             if st.button("Save Changes"):
                 file_url = None
                 file_type = None
@@ -342,7 +367,7 @@ if st.session_state.admin_visible:
                     file_url = upload_media(new_file)
                     file_type = new_file.type.split("/")[0]
                 update_project(st.session_state.admin_edit_id, new_title, new_desc, file_url, file_type)
-                st.success("Updated!")
+                st.success("✅ Updated successfully!")
                 st.session_state.admin_edit_id = None
                 st.rerun()
     else:
