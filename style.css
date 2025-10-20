@@ -879,6 +879,9 @@ header[data-testid="stHeader"] {
 /* =========================
    OUR TEAM SECTION (Responsive)
 ========================= */
+/* =========================
+   OUR TEAM SECTION (Text-only Responsive)
+========================= */
 .team-section {
   background: linear-gradient(145deg, #3b2e2a, #8c5e3c);
   border-radius: 12px;
@@ -894,12 +897,11 @@ header[data-testid="stHeader"] {
   background: linear-gradient(90deg, #d4af37, #fff8e7, #d4af37);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: shine 3s infinite linear;
   text-shadow: 0 0 15px rgba(212,175,55,0.7);
   margin-bottom: 40px;
 }
 
-/* Team container grid */
+/* Team container layout */
 .team-container {
   display: flex;
   flex-wrap: wrap;
@@ -908,14 +910,14 @@ header[data-testid="stHeader"] {
   margin-top: 30px;
 }
 
-/* Individual team cards */
+/* Team member cards */
 .team-member {
   background: rgba(0, 0, 0, 0.25);
   border: 2px solid var(--gold);
   border-radius: 16px;
-  padding: 20px;
+  padding: 25px;
   text-align: center;
-  width: 220px;
+  width: 260px;
   box-shadow: 0 0 20px rgba(212,175,55,0.4);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -925,26 +927,40 @@ header[data-testid="stHeader"] {
   box-shadow: 0 0 25px rgba(212,175,55,0.7);
 }
 
-/* Team images */
-.team-member img {
-  width: 100%;
-  height: 220px;
-  object-fit: cover;
-  border-radius: 12px;
-  border: 2px solid var(--gold);
-  margin-bottom: 12px;
+/* Team member name */
+.team-member h2 {
+  font-family: "Cinzel", serif;
+  color: var(--offwhite);
+  font-size: 1.3rem;
+  margin-bottom: 8px;
+  background: linear-gradient(90deg, #fff5cc, #d4af37);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-/* Text inside team cards */
+/* Team member description */
 .team-member p {
   font-family: "Playfair Display", serif;
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: var(--offwhite);
   margin: 0;
-  line-height: 1.4;
+  line-height: 1.5;
 }
 
-/* Responsive tweaks for mobile */
+/* Office address box */
+.office-address {
+  margin-top: 40px;
+  background-color: rgba(0,0,0,0.25);
+  border: 2px solid var(--gold);
+  border-radius: 12px;
+  padding: 15px 25px;
+  display: inline-block;
+  color: var(--offwhite);
+  font-family: "Playfair Display", serif;
+  box-shadow: 0 0 20px rgba(212,175,55,0.3);
+}
+
+/* Mobile responsiveness */
 @media (max-width: 768px) {
   .team-container {
     flex-direction: column;
@@ -952,17 +968,24 @@ header[data-testid="stHeader"] {
   }
 
   .team-member {
-    width: 85%;
+    width: 90%;
   }
 
-  .team-member img {
-    height: 200px;
+  .team-member h2 {
+    font-size: 1.2rem;
   }
 
-  .team-section .section-title {
-    font-size: 1.4rem;
+  .team-member p {
+    font-size: 0.9rem;
+  }
+
+  .office-address {
+    margin-top: 25px;
+    padding: 12px 20px;
+    font-size: 0.95rem;
   }
 }
+
 
 footer {visibility: hidden;}
 
