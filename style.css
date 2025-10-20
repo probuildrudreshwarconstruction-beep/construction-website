@@ -862,12 +862,12 @@ button[kind="secondary"]:hover,
 }
 
 .team-member h2 {
-  font-size: 1rem; /* big heading for name */
+  font-size: 1rem !important; /* big heading for name */
   margin: 0 0 8px 0;
 }
 
 .team-member p {
-  font-size: 0.7rem; /* smaller description */
+  font-size: 0.7rem !important; /* smaller description */
   margin: 0;
 }
 
