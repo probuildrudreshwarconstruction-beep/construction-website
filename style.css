@@ -867,6 +867,38 @@ button[kind="secondary"]:hover,
 .address-card p {
   margin: 10px 0;
 }
+
+
+/* ===== Team Members Boxes ===== */
+.team-member-box {
+  background: rgba(0,0,0,0.3);
+  border: 2px solid var(--gold);
+  border-radius: 16px;
+  display: inline-block;
+  padding: 20px 30px;
+  box-shadow: 0 0 20px rgba(212,175,55,0.4);
+  color: var(--offwhite);
+  font-family: "Playfair Display", serif;
+  margin: 15px;
+  text-align: center;
+  min-width: 200px;
+}
+
+.team-member-box h3 {
+  font-family: "Cinzel", serif;
+  color: var(--gold);
+  font-size: 1.5rem;
+  margin-bottom: 8px;
+}
+
+.team-member-box p {
+  font-size: 1rem;
+  margin: 0;
+}
+
+
+
+
 video::-webkit-media-controls-panel {
   background-color: rgba(0, 0, 0, 0.4);
 }
