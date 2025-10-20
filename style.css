@@ -876,5 +876,93 @@ header[data-testid="stHeader"] {
 }
 
 #MainMenu {visibility: hidden;}
+/* =========================
+   OUR TEAM SECTION (Responsive)
+========================= */
+.team-section {
+  background: linear-gradient(145deg, #3b2e2a, #8c5e3c);
+  border-radius: 12px;
+  padding: 60px 30px;
+  margin-bottom: 60px;
+  box-shadow: 0 0 25px rgba(140, 94, 60, 0.5);
+  text-align: center;
+}
+
+.team-section .section-title {
+  font-family: "Cinzel", serif;
+  font-size: 1.8rem;
+  background: linear-gradient(90deg, #d4af37, #fff8e7, #d4af37);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shine 3s infinite linear;
+  text-shadow: 0 0 15px rgba(212,175,55,0.7);
+  margin-bottom: 40px;
+}
+
+/* Team container grid */
+.team-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 25px;
+  margin-top: 30px;
+}
+
+/* Individual team cards */
+.team-member {
+  background: rgba(0, 0, 0, 0.25);
+  border: 2px solid var(--gold);
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  width: 220px;
+  box-shadow: 0 0 20px rgba(212,175,55,0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.team-member:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(212,175,55,0.7);
+}
+
+/* Team images */
+.team-member img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 2px solid var(--gold);
+  margin-bottom: 12px;
+}
+
+/* Text inside team cards */
+.team-member p {
+  font-family: "Playfair Display", serif;
+  font-size: 1rem;
+  color: var(--offwhite);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Responsive tweaks for mobile */
+@media (max-width: 768px) {
+  .team-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .team-member {
+    width: 85%;
+  }
+
+  .team-member img {
+    height: 200px;
+  }
+
+  .team-section .section-title {
+    font-size: 1.4rem;
+  }
+}
+
 footer {visibility: hidden;}
 
