@@ -201,41 +201,62 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # -------------------- Contact --------------------
+# -------------------- Contact --------------------
+whatsapp_logo = "https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+email_logo = "https://upload.wikimedia.org/wikipedia/commons/4/4e/Mail_%28iOS%29.svg"
+insta_logo = "https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg"
+
 st.markdown(f"""
 <section class="fancy-section" id="cta">
   <h1 class="section-title">Contact Us</h1>
+
   <div class="fancy-content">
     <div class="left">
       <a href="{FORM_URL}" target="_blank">
         <button class="cta-button" style="background:var(--gold); color:#000;">
-          📄 Enquire via Google Form
+          📄 Enquiry Form
         </button>
       </a>
     </div>
     <div class="right">
       <a href="{wa_link}" target="_blank">
-        <button class="cta-button" style="background:var(--bronze); color:#fff;">
-          💬 WhatsApp
+        <button class="cta-button" style="background:#25D366; color:#075E54; font-weight:bold; border:none;">
+          <img src="{whatsapp_logo}" style="width:20px; height:20px; vertical-align:middle; margin-right:6px;">
+          WhatsApp
         </button>
       </a>
     </div>
   </div>
+
   <div class="fancy-content" style="margin-top:40px;">
     <div class="left">
       <a href="{EMAIL}" target="_blank">
         <button class="cta-button" style="background:#1e1e1e; color:var(--gold);">
-          ✉️ Email Us
+          <img src="{email_logo}" style="width:20px; height:20px; vertical-align:middle; margin-right:6px;">
+          Email Us
         </button>
       </a>
     </div>
     <div class="right">
       <a href="{INSTA}" target="_blank">
         <button class="cta-button" style="background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af,#515bd4); color:white;">
-          📸 Instagram
+          <img src="{insta_logo}" style="width:20px; height:20px; vertical-align:middle; margin-right:6px;">
+          ProBuild Rudreshwar
         </button>
       </a>
     </div>
   </div>
+
+  <!-- Second Instagram Button -->
+  <div class="fancy-content" style="margin-top:20px; justify-content:center;">
+    <a href="{INSTA2}" target="_blank">
+      <button class="cta-button" style="background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af,#515bd4); color:white;">
+        <img src="{insta_logo}" style="width:20px; height:20px; vertical-align:middle; margin-right:6px;">
+        श्री ᴀꜱᴛʀᴏ ᴠᴀꜱᴛᴜ
+      </button>
+    </a>
+  </div>
+
   <p style="text-align:center; margin-top:12px; font-size:0.9rem; opacity:0.8;">© 2025 ProBuild Rudreshwar Constructions</p>
 </section>
 """, unsafe_allow_html=True)
