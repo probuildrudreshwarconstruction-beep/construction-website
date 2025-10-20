@@ -196,9 +196,9 @@ st.markdown("""
 
   <div class="team-member">
     <h2>🏢 Office Address</h2>
-    <p>Er. Rushikesh Shivarkar<br>
+    <p><br>
     Address: Lane No.1, Laxmi Colony, Pune – 411043<br>
-    Contact: +91 7745065820</p>
+    </p>
   </div>
 </section>
 """, unsafe_allow_html=True)
