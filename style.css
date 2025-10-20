@@ -542,14 +542,14 @@ button[kind="secondary"]:hover,
 .stButton>button,
 button[kind="secondary"],
 .admin-panel button {
-  background: var(--gold) !important;
+  background: var(--bronze) !important;
   color: #000 !important;
   font-family: "Cinzel", serif !important;
   border-radius: 10px !important;
   font-weight: 700 !important;
   padding: 8px 18px !important;
   transition: all 0.3s ease-in-out !important;
-  box-shadow: 0 0 12px rgba(212,175,55,0.3);
+  box-shadow: var(--bronze);
 }
 .stButton>button:hover,
 button[kind="secondary"]:hover,
@@ -558,6 +558,7 @@ button[kind="secondary"]:hover,
   color: #fff !important;
   box-shadow: 0 0 25px rgba(212,175,55,0.6);
 }
+
 
 /* Project List */
 .project-list {
