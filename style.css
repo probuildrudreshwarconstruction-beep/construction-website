@@ -848,7 +848,7 @@ button[kind="secondary"]:hover,
 /* ===== Address Section ===== */
 /* ===== Team Section ===== */
 .team-section {
-  background: linear-gradient(145deg, #3b2e2a, #8c5e3c);
+  background: linear-gradient(145deg, #053357, #03b3d2);
   color: var(--offwhite);
   padding: 50px 40px;
   font-family: "Playfair Display", serif;
