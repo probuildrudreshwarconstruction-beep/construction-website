@@ -846,51 +846,54 @@ button[kind="secondary"]:hover,
 }
 
 
-/* ===== Address Section ===== */
-.address-section {
-  background: linear-gradient(145deg, #3b2e2a, #8c5e3c);
-  text-align: center;
-  padding: 60px 40px;
+
+/* -------------------- Our Team Section -------------------- */
+#team {
+    background-color: #f5f0e1; /* beige/light brown background */
+    padding: 50px 20px;
+    border-radius: 12px;
+    border: 3px solid #D4AF37; /* gold border */
+    margin: 40px auto;
+    max-width: 1200px;
 }
 
-.address-card {
-  background: rgba(0,0,0,0.3);
-  border: 2px solid var(--gold);
-  border-radius: 16px;
-  display: inline-block;
-  padding: 20px 40px;
-  box-shadow: 0 0 20px rgba(212,175,55,0.4);
-  color: var(--offwhite);
-  font-size: 1.1rem;
-  font-family: "Playfair Display", serif;
+#team .section-title {
+    text-align: center;
+    font-size: 2rem;
+    color: #8B4513; /* bronze/brown for heading */
+    margin-bottom: 40px;
+    font-weight: bold;
 }
-.address-card p {
-  margin: 10px 0;
-}
-/* -------------------- Team Member Boxes -------------------- */
+
 .team-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 20px;
-    margin-top: 20px;
 }
 
+/* Individual team member box */
 .team-member-box {
-    background-color: #f5f0e1;  /* beige/light brown */
-    border: 3px solid #D4AF37;   /* gold border */
+    background-color: #fff8f0; /* slightly lighter beige */
+    border: 3px solid #D4AF37; /* gold border */
     border-radius: 12px;
     padding: 20px;
-    max-width: 300px;
-    flex: 1 1 250px; /* responsive width */
+    max-width: 280px;
+    flex: 1 1 250px;
     box-shadow: 2px 2px 12px rgba(0,0,0,0.1);
     text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.team-member-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 4px 4px 18px rgba(0,0,0,0.2);
 }
 
 .team-member-box h3 {
     font-size: 1.3rem;
     margin-bottom: 10px;
-    color: #8B4513; /* bronze/brown for heading */
+    color: #8B4513; /* bronze heading */
 }
 
 .team-member-box p {
@@ -899,13 +902,39 @@ button[kind="secondary"]:hover,
     color: #333;
 }
 
-/* -------------------- Responsive Adjustments -------------------- */
+/* -------------------- Office Address Box at the bottom -------------------- */
+.office-address {
+    background-color: #fff8f0; /* same as team member */
+    border: 3px solid #D4AF37;
+    border-radius: 12px;
+    padding: 20px;
+    max-width: 300px;
+    margin: 40px auto 0 auto;
+    text-align: center;
+    box-shadow: 2px 2px 12px rgba(0,0,0,0.1);
+}
+
+.office-address h4 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #8B4513;
+}
+
+.office-address p {
+    font-size: 0.95rem;
+    color: #333;
+    line-height: 1.4;
+}
+
+/* -------------------- Responsive -------------------- */
 @media screen and (max-width: 768px) {
     .team-container {
         flex-direction: column;
         gap: 15px;
     }
-    .team-member-box {
+
+    .team-member-box,
+    .office-address {
         max-width: 90%;
         padding: 15px;
     }
