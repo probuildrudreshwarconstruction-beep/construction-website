@@ -867,7 +867,7 @@ button[kind="secondary"]:hover,
 }
 
 .team-member p {
-  font-size: 0.7rem !important; /* smaller description */
+  font-size: 0.9rem !important; /* smaller description */
   margin: 0;
 }
 
