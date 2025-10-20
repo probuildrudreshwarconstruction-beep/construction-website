@@ -170,27 +170,27 @@ st.markdown("""
   <h1 class="section-title">Our Team</h1>
 
   <div class="team-member">
-    <h2>🏗️ Rushikesh Shivarkar</h2>
+    <h2>Rushikesh Shivarkar</h2>
     <p>Founder & Managing Director — A qualified Civil Engineer with hands-on experience in residential and industrial construction. He leads the company with a focus on quality, technical precision, and client satisfaction.</p>
   </div>
 
   <div class="team-member">
-    <h2>👷‍♂️ Rampal Prajapati</h2>
+    <h2>Rampal Prajapati</h2>
     <p>Project Manager / Site Supervisor — Oversees daily site operations, ensures timely completion, and maintains safety and quality standards on every project.</p>
   </div>
 
   <div class="team-member">
-    <h2>📐 Rohan Kathare</h2>
+    <h2>Rohan Kathare</h2>
     <p>Design & Planning Engineer — Responsible for architectural and structural design, project planning, and innovative layout solutions tailored to client needs.</p>
   </div>
 
   <div class="team-member">
-    <h2>👨‍🔧 Tanaji Damgude</h2>
+    <h2>Tanaji Damgude</h2>
     <p>Fabrication & Shed Expert — Specialist in industrial, PEB, and conventional steel shed construction, ensuring strength, precision, and durability in every structure.</p>
   </div>
 
   <div class="team-member">
-    <h2>👷‍♀️ Skilled Labour & On-Site Team</h2>
+    <h2>Skilled Labour & On-Site Team</h2>
     <p>Our hardworking labour force forms the backbone of every project — ensuring fine craftsmanship and timely delivery.</p>
   </div>
 
