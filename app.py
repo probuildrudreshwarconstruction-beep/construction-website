@@ -113,6 +113,49 @@ st.markdown("""
 </section>
 """, unsafe_allow_html=True)
 
+# -------------------- Our Team Section --------------------
+st.markdown("""
+<section class="fancy-section team-section" id="team">
+  <h1 class="section-title">Our Team</h1>
+
+  <p style="text-align:center; max-width:800px; margin:auto; font-size:1.1rem;">
+    At ProBuild Rudreshwar Constructions, our success is driven by a team of passionate and skilled professionals
+    who bring expertise, innovation, and dedication to every project.
+  </p>
+
+  <div class="team-container">
+
+    <div class="team-member">
+      <img src="assets/team/rushikesh.jpg" alt="Er. Rushikesh Shivarkar">
+      <p><b>Er. Rushikesh Shivarkar</b><br>Founder & CEO</p>
+    </div>
+
+    <div class="team-member">
+      <img src="assets/team/member2.jpg" alt="Team Member">
+      <p><b>Member Name</b><br>Project Engineer</p>
+    </div>
+
+    <div class="team-member">
+      <img src="assets/team/member3.jpg" alt="Team Member">
+      <p><b>Member Name</b><br>Site Supervisor</p>
+    </div>
+
+    <div class="team-member">
+      <img src="assets/team/member4.jpg" alt="Team Member">
+      <p><b>Member Name</b><br>Architect & Designer</p>
+    </div>
+
+  </div>
+
+  <div class="office-address">
+    <p><b>Office Address:</b><br>
+    Lane No.1, Laxmi Colony, Pune – 411043</p>
+  </div>
+</section>
+""", unsafe_allow_html=True)
+
+
+
 # -------------------- Projects Section --------------------
 st.markdown("<h1 class='section-title' style='text-align:center;'>Our Projects</h1>", unsafe_allow_html=True)
 
