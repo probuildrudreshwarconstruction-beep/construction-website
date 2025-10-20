@@ -163,16 +163,67 @@ for idx, proj in enumerate(projects):
             st.markdown(f"<ul class='viewmore-list'>{formatted_desc}</ul>", unsafe_allow_html=True)
 
 # -------------------- Address --------------------
-st.markdown("""
-<section class="fancy-section address-section">
-  <h1 class="section-title">⚜️</h1>
-  <div class="address-card">
-    <p><b>Er.</b>Rushikesh Shivarkar</p>
-    <p><b>Address:</b> Lane No.1, Laxmi Colony, Pune – 411043</p>
-    <p><b>Contact:</b> +91 7745065820</p>
+<!-- Our Team Section -->
+<section id="team" class="team-section" style="padding: 80px 0; background-color: #f8f9fa;">
+  <div class="container" style="max-width: 1100px; margin: 0 auto; text-align: center;">
+    
+    <h2 style="font-size: 2.8rem; font-weight: 700; color: #2c3e50; margin-bottom: 20px;">
+      Our Team
+    </h2>
+    <p style="max-width: 850px; margin: 0 auto 60px; color: #555; font-size: 1.1rem; line-height: 1.7;">
+      At <strong>ProBuild Rudreshwar Constructions</strong>, our success is driven by a team of passionate and skilled professionals who bring expertise, innovation, and dedication to every project.
+    </p>
+
+    <div class="team-grid" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 30px;">
+      
+      <!-- Member 1 -->
+      <div class="team-card" style="background: #fff; border-radius: 18px; box-shadow: 0 6px 20px rgba(0,0,0,0.08); padding: 30px; width: 320px; text-align: left; transition: all 0.3s ease;">
+        <h3 style="font-size: 1.3rem; font-weight: 700; color: #b8860b;">🏗️ Rushikesh Shivarkar</h3>
+        <p style="font-weight: 600; color: #2c3e50; margin-top: 5px;">Founder & Managing Director</p>
+        <p style="color: #555; margin-top: 10px; line-height: 1.6;">
+          A qualified Civil Engineer with hands-on experience in residential and industrial construction. He leads the company with a focus on quality, technical precision, and client satisfaction.
+        </p>
+      </div>
+
+      <!-- Member 2 -->
+      <div class="team-card" style="background: #fff; border-radius: 18px; box-shadow: 0 6px 20px rgba(0,0,0,0.08); padding: 30px; width: 320px; text-align: left; transition: all 0.3s ease;">
+        <h3 style="font-size: 1.3rem; font-weight: 700; color: #b8860b;">👷‍♂️ Rampal Prajapati</h3>
+        <p style="font-weight: 600; color: #2c3e50; margin-top: 5px;">Project Manager / Site Supervisor</p>
+        <p style="color: #555; margin-top: 10px; line-height: 1.6;">
+          Oversees daily site operations, ensures timely completion, and maintains safety and quality standards on every project.
+        </p>
+      </div>
+
+      <!-- Member 3 -->
+      <div class="team-card" style="background: #fff; border-radius: 18px; box-shadow: 0 6px 20px rgba(0,0,0,0.08); padding: 30px; width: 320px; text-align: left; transition: all 0.3s ease;">
+        <h3 style="font-size: 1.3rem; font-weight: 700; color: #b8860b;">📐 Rohan Kathare</h3>
+        <p style="font-weight: 600; color: #2c3e50; margin-top: 5px;">Design & Planning Engineer</p>
+        <p style="color: #555; margin-top: 10px; line-height: 1.6;">
+          Responsible for architectural and structural design, project planning, and innovative layout solutions tailored to client needs.
+        </p>
+      </div>
+
+      <!-- Member 4 -->
+      <div class="team-card" style="background: #fff; border-radius: 18px; box-shadow: 0 6px 20px rgba(0,0,0,0.08); padding: 30px; width: 320px; text-align: left; transition: all 0.3s ease;">
+        <h3 style="font-size: 1.3rem; font-weight: 700; color: #b8860b;">👨‍🔧 Tanaji Damgude</h3>
+        <p style="font-weight: 600; color: #2c3e50; margin-top: 5px;">Fabrication & Shed Expert</p>
+        <p style="color: #555; margin-top: 10px; line-height: 1.6;">
+          Specialist in industrial, PEB, and conventional steel shed construction — ensuring strength, precision, and durability in every structure.
+        </p>
+      </div>
+
+      <!-- Member 5 -->
+      <div class="team-card" style="background: #fff; border-radius: 18px; box-shadow: 0 6px 20px rgba(0,0,0,0.08); padding: 30px; width: 320px; text-align: left; transition: all 0.3s ease;">
+        <h3 style="font-size: 1.3rem; font-weight: 700; color: #b8860b;">👷‍♀️ Skilled Labour & On-Site Team</h3>
+        <p style="font-weight: 600; color: #2c3e50; margin-top: 5px;">Execution & Craftsmanship</p>
+        <p style="color: #555; margin-top: 10px; line-height: 1.6;">
+          Our hardworking labour force forms the backbone of every project — ensuring fine craftsmanship and timely delivery.
+        </p>
+      </div>
+    </div>
   </div>
 </section>
-""", unsafe_allow_html=True)
+
 
 # -------------------- Contact --------------------
 st.markdown(f"""
