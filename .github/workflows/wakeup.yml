@@ -1,0 +1,24 @@
+name: Wake Up Streamlit App
+
+on:
+  schedule:
+    # Runs every 15 minutes (UTC)
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+jobs:
+  wake-up:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          pip install selenium webdriver-manager
+      - name: Run wake-up script
+        env:
+          STREAMLIT_APP_URL: "https://construction-website-xuaf7teeviyuemaa2j7rcj.streamlit.app/"
+        run: python wake_up_streamlit.py
